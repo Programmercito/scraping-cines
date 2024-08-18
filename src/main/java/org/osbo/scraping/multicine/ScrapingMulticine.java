@@ -38,6 +38,7 @@ public class ScrapingMulticine {
             CineResponseData cineResponseData = new CineResponseData();
             JSONObject jsonItem = (JSONObject) item;
             cineResponseData.setCity(jsonItem.getString("name"));
+            cineResponseData.setId(jsonItem.getString("id"));
             int group = 1;
             String peliculas = "";
             while (jsonItem.has("movies_group" + group)) {
