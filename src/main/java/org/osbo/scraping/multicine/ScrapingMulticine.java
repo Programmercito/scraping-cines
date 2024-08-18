@@ -5,6 +5,8 @@ import org.osbo.scraping.model.CineRequstGetData;
 import kong.unirest.core.HttpResponse;
 import kong.unirest.core.JsonNode;
 import kong.unirest.core.Unirest;
+import kong.unirest.core.json.JSONArray;
+import kong.unirest.core.json.JSONObject;
 
 /**
  *
@@ -21,5 +23,13 @@ public class ScrapingMulticine {
                 .body(request)
                 .asJson();
         System.out.println(asJson.getBody().toPrettyString());
+
+        JSONObject jsonObject = asJson.getBody().getObject().getJSONObject("result");
+        JSONArray jsonArray = jsonObject.getJSONArray("data");
+        jsonArray.forEach(item -> {
+            JSONObject jsonItem = (JSONObject) item;
+            System.out.println(jsonItem.toString());
+        });
+
     }
 }
