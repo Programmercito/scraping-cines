@@ -28,7 +28,13 @@ public class ScrapingMulticine {
         JSONArray jsonArray = jsonObject.getJSONArray("data");
         jsonArray.forEach(item -> {
             JSONObject jsonItem = (JSONObject) item;
-            System.out.println(jsonItem.toString());
+            int group = 1;
+            System.out.println("movies groups:\n");
+            while (jsonItem.has("movies_group" + group)) {
+                String movies = (String)jsonItem.get("movies_group" + group);
+                System.out.println(movies+"\n");
+                group++;
+            }
         });
 
     }
