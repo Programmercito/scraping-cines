@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class Movies {
+    String id;
     String nombre;
     String tipo;
     String horarios;

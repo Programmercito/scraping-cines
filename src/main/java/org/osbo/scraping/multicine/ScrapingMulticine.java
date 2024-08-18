@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.osbo.scraping.model.CineRequestGetData;
 import org.osbo.scraping.model.CineResponseData;
+import org.osbo.scraping.model.Movies;
 
 import kong.unirest.core.HttpResponse;
 import kong.unirest.core.JsonNode;
@@ -36,20 +37,28 @@ public class ScrapingMulticine {
         jsonArray.forEach(item -> {
             CineResponseData cineResponseData = new CineResponseData();
             JSONObject jsonItem = (JSONObject) item;
-
+            cineResponseData.setCity(jsonItem.getString("name"));
             int group = 1;
-            System.out.println("movies groups:");
-            String peliculas="";
+            String peliculas = "";
             while (jsonItem.has("movies_group" + group)) {
-                String movies = (String)jsonItem.get("movies_group" + group);
-                
+                String movies = (String) jsonItem.get("movies_group" + group);
+
                 if (!("null".equals(movies) || movies == null)) {
-                    peliculas+=movies;
+                    peliculas += movies;
                 }
                 group++;
             }
-            System.out.println(peliculas);
+            String[] split = peliculas.split(",");
+            cineResponseData.setMovies(new ArrayList<Movies>());
+            for (int indice = 0; split.length > indice; indice++) {
+                Movies movies = new Movies();
+                movies.setId(split[indice]);
+                cineResponseData.getMovies().add(movies);
+            }
+            data.add(cineResponseData);
         });
+        System.out.println(data);
+
 
     }
 }
