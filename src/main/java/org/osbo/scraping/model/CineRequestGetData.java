@@ -3,6 +3,6 @@ package org.osbo.scraping.model;
 import lombok.Data;
 
 @Data
-public class CineRequstGetData {
+public class CineRequestGetData {
     String tk;
 }
