@@ -28,17 +28,38 @@ public class ScrapingMulticine {
         List<CineResponseData> data = new FetchingCinemas().getCinemas();
         data.forEach(cine -> {
             CineResponseData cineWithMovies = new FetchingMovies().getMovies(cine);
+            List<Movies> movies = new ArrayList<Movies>();
             cineWithMovies.getMovies().forEach(movie -> {
                 String cinema = ConvertIds.getGroupId(cine.getId());
 
                 String horarios = new FetchingHorarios().getHorarios(cinema, movie.getId());
                 movie.setHorarios(horarios);
+                if (movie.getHorarios() != "" && movie.getHorarios() != null) {
+                    movies.add(movie);
+                }
                 System.out.println(movie.getHorarios());
-                
+
             });
+            cineWithMovies.setMovies(movies);
 
         });
         System.out.println(data);
+        // mostrame el objeto en un string seperado con \n cada pelicula y su horario
+        // por ciudad y todo eso contacatenado en un string
+        for (CineResponseData cine : data) {
+            String result = "";
+
+            result += cine.getCity() + "\n";
+            for (Movies movie : cine.getMovies()) {
+                result += movie.getNombre() + "\n" + movie.getTipo() + "\n" + movie.getHorarios() + "\n";
+            }
+            System.out.println("*********************");
+            System.out.println(result);
+            System.out.println(result.length());
+            System.out.println("*********************");
+
+        }
+
 
     }
 }

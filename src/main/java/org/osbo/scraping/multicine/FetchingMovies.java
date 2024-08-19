@@ -43,6 +43,7 @@ public class FetchingMovies {
                 .asJson();
         System.out.println(asJson.getRequestSummary().asString());
         JsonNode body = asJson.getBody();
+        
         JSONArray jsonArray = body.getObject().getJSONArray("cinestar");
         cine.setMovies(new ArrayList<Movies>());
         jsonArray.forEach(item -> {
