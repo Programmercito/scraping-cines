@@ -39,31 +39,29 @@ public class FetchingHorarios {
                 .contentType("application/json")
                 .body(request)
                 .asJson();
-         //System.out.println(asJson.getRequestSummary().asString());
+        // System.out.println(asJson.getRequestSummary().asString());
         // System.out.println(asJson.getBody().toString());
-        JSONObject root = asJson.getBody().getObject()
-                .getJSONObject("result")
-                .getJSONObject("ShowTimeByDateAndMovieResult");
-        if (!root.has("root") || root.isNull("root")) {
-            return "";
-        }
-        root = root.getJSONObject("root");
-        if (!root.has("Show")) {
-            return "";
-        }
-        Object object = root.get("Show");
-        JSONArray show = null;
-        if (object instanceof JSONArray) {
-            show = root.getJSONArray("Show");
-        } else {
-            return "";
-        }
         StringBuilder horarios = new StringBuilder();
-        show.forEach(item -> {
-            JSONObject jsonItem = (JSONObject) item;
-            horarios.append(" ").append(jsonItem.getString("StartTime"));
-        });
-        return horarios.toString();
+
+        try {
+            JSONObject root = asJson.getBody().getObject()
+                    .getJSONObject("result")
+                    .getJSONObject("ShowTimeByDateAndMovieResult");
+
+            root = root.getJSONObject("root");
+            Object object = root.get("Show");
+            JSONArray show = null;
+
+            show = root.getJSONArray("Show");
+
+            show.forEach(item -> {
+                JSONObject jsonItem = (JSONObject) item;
+                horarios.append(" ").append(jsonItem.getString("StartTime"));
+            });
+        } catch (Exception e) {
+            return "";
+        }
+        return horarios.toString().trim();
     }
 
 }
