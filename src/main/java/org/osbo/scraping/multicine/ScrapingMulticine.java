@@ -27,7 +27,9 @@ public class ScrapingMulticine {
 
         List<CineResponseData> data = new FetchingCinemas().getCinemas();
         data.forEach(cine -> {
-            String ciudad = "1" + cine.getId() + "0";
+            System.out.println(cine.getCity());
+            String ciudad = ConvertIds.getGroupId(cine.getId());
+            System.out.println(ciudad);
 
             NamesMoviesRequest namesMovies = new NamesMoviesRequest();
             namesMovies.setApisource("cinestar");
