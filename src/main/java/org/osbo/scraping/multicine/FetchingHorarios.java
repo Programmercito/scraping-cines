@@ -39,7 +39,7 @@ public class FetchingHorarios {
                 .contentType("application/json")
                 .body(request)
                 .asJson();
-        // System.out.println(asJson.getRequestSummary().asString());
+        System.out.println(asJson.getRequestSummary().asString());
         // System.out.println(asJson.getBody().toString());
         StringBuilder horarios = new StringBuilder();
 
@@ -51,8 +51,13 @@ public class FetchingHorarios {
             root = root.getJSONObject("root");
             Object object = root.get("Show");
             JSONArray show = null;
-
-            show = root.getJSONArray("Show");
+            if (object instanceof JSONArray) {
+                show = root.getJSONArray("Show");
+            } else {
+                JSONObject json = root.getJSONObject("Show");
+                show = new JSONArray();
+                show.put(json);
+            }
 
             show.forEach(item -> {
                 JSONObject jsonItem = (JSONObject) item;
