@@ -1,5 +1,7 @@
 package org.osbo.scraping.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 @Data
@@ -16,14 +18,19 @@ public class NamesMoviesRequest {
         private String ws;
         private String method;
         private Params params;
-        public CinestarParams(){}
+
+        public CinestarParams() {
+        }
     }
 
     @Data
     public class Params {
+        @JsonProperty("TheatreGroupId")
         private int TheatreGroupId;
+        @JsonProperty("FilterId")
         private String FilterId;
-        public Params(){}
+        public Params() {
+        }
 
     }
 }
