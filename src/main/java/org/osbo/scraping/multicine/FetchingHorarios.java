@@ -1,0 +1,69 @@
+package org.osbo.scraping.multicine;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import org.osbo.scraping.model.HorariosRequest;
+import org.osbo.scraping.model.NamesMoviesRequest;
+import org.osbo.scraping.model.HorariosRequest.HorariosParams;
+import org.osbo.scraping.model.NamesMoviesRequest.CinestarParams;
+import org.osbo.scraping.model.NamesMoviesRequest.Params;
+
+import kong.unirest.core.HttpResponse;
+import kong.unirest.core.JsonNode;
+import kong.unirest.core.Unirest;
+import kong.unirest.core.json.JSONArray;
+import kong.unirest.core.json.JSONObject;
+
+public class FetchingHorarios {
+
+    public String getHorarios(String idcine, String idmovie) {
+        System.out.println(idcine + " " + idmovie);
+        String url = "https://www.multicine.com.bo/restapi/public/api/cinestar/getdata2";
+
+        HorariosRequest request = new HorariosRequest();
+        request.setMethod("ShowTimeByDateAndMovie");
+        request.setWs("info");
+        HorariosParams params = request.new HorariosParams();
+        params.setTheatreGroupId(idcine);
+        params.setFeatureId(idmovie);
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String formattedDate = currentDate.format(formatter);
+
+        params.setSDate(formattedDate);
+        request.setParams(params);
+
+        HttpResponse<JsonNode> asJson = Unirest.post(url)
+                .contentType("application/json")
+                .body(request)
+                .asJson();
+         //System.out.println(asJson.getRequestSummary().asString());
+        // System.out.println(asJson.getBody().toString());
+        JSONObject root = asJson.getBody().getObject()
+                .getJSONObject("result")
+                .getJSONObject("ShowTimeByDateAndMovieResult");
+        if (!root.has("root") || root.isNull("root")) {
+            return "";
+        }
+        root = root.getJSONObject("root");
+        if (!root.has("Show")) {
+            return "";
+        }
+        Object object = root.get("Show");
+        JSONArray show = null;
+        if (object instanceof JSONArray) {
+            show = root.getJSONArray("Show");
+        } else {
+            return "";
+        }
+        StringBuilder horarios = new StringBuilder();
+        show.forEach(item -> {
+            JSONObject jsonItem = (JSONObject) item;
+            horarios.append(" ").append(jsonItem.getString("StartTime"));
+        });
+        return horarios.toString();
+    }
+
+}
