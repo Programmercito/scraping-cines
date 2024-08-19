@@ -27,33 +27,7 @@ public class ScrapingMulticine {
 
         List<CineResponseData> data = new FetchingCinemas().getCinemas();
         data.forEach(cine -> {
-            System.out.println(cine.getCity());
-            String ciudad = ConvertIds.getGroupId(cine.getId());
-            System.out.println(ciudad);
-
-            NamesMoviesRequest namesMovies = new NamesMoviesRequest();
-            namesMovies.setApisource("cinestar");
-            namesMovies.setPer_page(1000);
-            namesMovies.setResponseFormat("Movie");
-            namesMovies.setTk(null);
-            Params params = namesMovies.new Params();
-            params.setFilterId("MWEEKFORW,MWEEKFORW,MWEEKFORW");
-            params.setTheatreGroupId(Integer.parseInt(ciudad));
-            CinestarParams cinestarParams = namesMovies.new CinestarParams();
-            cinestarParams.setMethod("Movies");
-            cinestarParams.setWs("info");
-            cinestarParams.setParams(params);
-            namesMovies.setCinestarParams(cinestarParams);
-
-            HttpResponse<JsonNode> asJson = Unirest
-                    .post("https://www.multicine.com.bo/restapi/public/api/movie/getdata")
-                    .body(namesMovies)
-                    .asJson();
-            System.out.println(asJson.getRequestSummary().asString());
-            JsonNode body = asJson.getBody();
-            System.out.println("******");
-
-            System.out.println(body.getObject().has("cinestar"));
+            CineResponseData cineWithMovies = new FetchingMovies().getMovies(cine);
         });
 
     }
