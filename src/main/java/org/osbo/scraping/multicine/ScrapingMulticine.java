@@ -28,7 +28,17 @@ public class ScrapingMulticine {
         List<CineResponseData> data = new FetchingCinemas().getCinemas();
         data.forEach(cine -> {
             CineResponseData cineWithMovies = new FetchingMovies().getMovies(cine);
+            cineWithMovies.getMovies().forEach(movie -> {
+                String cinema = ConvertIds.getGroupId(cine.getId());
+
+                String horarios = new FetchingHorarios().getHorarios(cinema, movie.getId());
+                movie.setHorarios(horarios);
+                System.out.println(movie.getHorarios());
+                
+            });
+
         });
+        System.out.println(data);
 
     }
 }
