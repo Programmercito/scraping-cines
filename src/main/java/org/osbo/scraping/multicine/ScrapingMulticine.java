@@ -1,7 +1,9 @@
 package org.osbo.scraping.multicine;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.osbo.scraping.model.CineRequestGetData;
 import org.osbo.scraping.model.CineResponseData;
@@ -24,6 +26,16 @@ import kong.unirest.core.json.JSONObject;
 public class ScrapingMulticine {
 
     public static void main(String[] args) {
+        String logomulti = "https://www.multicine.com.bo/assets/images/logo_multicine.png";
+        Map<String, String> ciudad = new HashMap<String, String>();
+        ciudad.put("120", "https://comunidadescolar.com.bo/wp-content/uploads/2018/07/LaPazIllimani-768x480.jpg");
+        ciudad.put("130", "https://www.eabolivia.com/images/stories/newsbolivia/ElAlto-34Aos.jpg");
+        ciudad.put("140",
+                "https://content.r9cdn.net/rimg/dimg/7c/37/f60cf154-city-21742-165fcf16a63.jpg?crop=true&width=1020&height=498");
+        String token = "7436861495:AAG2MF3X-VN2ieewXcgtL96HLx2SiifvHJE";
+        String chat_id = "-1002164582366";
+
+
 
         List<CineResponseData> data = new FetchingCinemas().getCinemas();
         data.forEach(cine -> {
@@ -59,7 +71,6 @@ public class ScrapingMulticine {
             System.out.println("*********************");
 
         }
-
 
     }
 }

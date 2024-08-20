@@ -2,6 +2,8 @@ package org.osbo.scraping.multicine;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.osbo.scraping.model.HorariosRequest;
 import org.osbo.scraping.model.NamesMoviesRequest;
@@ -18,6 +20,7 @@ import kong.unirest.core.json.JSONObject;
 public class FetchingHorarios {
 
     public String getHorarios(String idcine, String idmovie) {
+
         System.out.println(idcine + " " + idmovie);
         String url = "https://www.multicine.com.bo/restapi/public/api/cinestar/getdata2";
 
