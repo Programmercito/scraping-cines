@@ -5,29 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.osbo.scraping.model.CineRequestGetData;
 import org.osbo.scraping.model.CineResponseData;
 import org.osbo.scraping.model.Movies;
-import org.osbo.scraping.model.NamesMoviesRequest;
-import org.osbo.scraping.model.NamesMoviesRequest.CinestarParams;
-import org.osbo.scraping.model.NamesMoviesRequest.Params;
-
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.model.request.InputMedia;
 import com.pengrad.telegrambot.model.request.InputMediaPhoto;
-import com.pengrad.telegrambot.model.request.InputMediaVideo;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMediaGroup;
 import com.pengrad.telegrambot.request.SendMessage;
-import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.response.MessagesResponse;
 import com.pengrad.telegrambot.response.SendResponse;
-
-import kong.unirest.core.HttpResponse;
-import kong.unirest.core.JsonNode;
-import kong.unirest.core.Unirest;
-import kong.unirest.core.json.JSONArray;
-import kong.unirest.core.json.JSONObject;
 
 /**
  *
