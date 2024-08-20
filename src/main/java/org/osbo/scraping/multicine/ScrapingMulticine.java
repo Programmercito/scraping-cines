@@ -99,7 +99,7 @@ public class ScrapingMulticine {
             System.out.println("*********************");
 
         }
-        String mensaje="Este canal de Telegram no es el canal oficial del cine [Nombre del Cine]. No tenemos ninguna afiliación con el cine ni con sus operadores. Nuestro objetivo es proporcionar información sobre los horarios de las películas para que puedas planificar tu visita. Para obtener la información más actualizada y oficial, te recomendamos visitar el sitio web o las redes sociales del cine.";
+        String mensaje="Este canal de Telegram no es el canal oficial de ningun CINE. No tenemos ninguna afiliación con el cine ni con sus operadores. Nuestro objetivo es proporcionar información sobre los horarios de las películas para que puedas planificar tu visita. Para obtener la información más actualizada y oficial, te recomendamos visitar el sitio web o las redes sociales del cine.";
         SendMessage sendMessage = new SendMessage(chat_id, mensaje);
         sendMessage.disableNotification(true);
         sendMessage.parseMode(ParseMode.HTML);
