@@ -10,6 +10,7 @@ import org.osbo.scraping.model.NamesMoviesRequest;
 import org.osbo.scraping.model.HorariosRequest.HorariosParams;
 import org.osbo.scraping.model.NamesMoviesRequest.CinestarParams;
 import org.osbo.scraping.model.NamesMoviesRequest.Params;
+import org.osbo.util.DateString;
 
 import kong.unirest.core.HttpResponse;
 import kong.unirest.core.JsonNode;
@@ -31,9 +32,7 @@ public class FetchingHorarios {
         params.setTheatreGroupId(idcine);
         params.setFeatureId(idmovie);
 
-        LocalDate currentDate = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        String formattedDate = currentDate.format(formatter);
+        String formattedDate = DateString.getFecha("yyyyMMdd");
 
         params.setSDate(formattedDate);
         request.setParams(params);
