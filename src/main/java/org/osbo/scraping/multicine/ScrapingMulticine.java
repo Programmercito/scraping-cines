@@ -23,6 +23,16 @@ import com.pengrad.telegrambot.response.SendResponse;
 public class ScrapingMulticine {
 
     public static void main(String[] args) {
+        String token = "7436861495:AAG2MF3X-VN2ieewXcgtL96HLx2SiifvHJE";
+        String chat_id = "-1002164582366";
+        TelegramBot bot = new TelegramBot(token);
+
+        String mensaje="Este canal de Telegram no es el canal oficial de ningun CINE. No tenemos ninguna afiliación con el cine ni con sus operadores. Nuestro objetivo es proporcionar información sobre los horarios de las películas para que puedas planificar tu visita. Para obtener la información más actualizada y oficial, te recomendamos visitar el sitio web o las redes sociales del cine.";
+        SendMessage sendMessage1 = new SendMessage(chat_id, mensaje);
+        sendMessage1.disableNotification(true);
+        sendMessage1.parseMode(ParseMode.HTML);
+        SendResponse response1 = bot.execute(sendMessage1);
+
 
         List<CineResponseData> data = new FetchingCinemas().getCinemas();
         data.forEach(cine -> {
@@ -50,10 +60,8 @@ public class ScrapingMulticine {
         ciudad.put("140", "https://www.eabolivia.com/images/stories/newsbolivia/ElAlto-34Aos.jpg");
         ciudad.put("130",
                 "https://content.r9cdn.net/rimg/dimg/7c/37/f60cf154-city-21742-165fcf16a63.jpg?crop=true&width=1020&height=498");
-        String token = "7436861495:AAG2MF3X-VN2ieewXcgtL96HLx2SiifvHJE";
-        String chat_id = "-1002164582366";
 
-        TelegramBot bot = new TelegramBot(token);
+
 
         for (CineResponseData cine : data) {
             String result = "";
@@ -85,11 +93,7 @@ public class ScrapingMulticine {
             System.out.println("*********************");
 
         }
-        String mensaje="Este canal de Telegram no es el canal oficial de ningun CINE. No tenemos ninguna afiliación con el cine ni con sus operadores. Nuestro objetivo es proporcionar información sobre los horarios de las películas para que puedas planificar tu visita. Para obtener la información más actualizada y oficial, te recomendamos visitar el sitio web o las redes sociales del cine.";
-        SendMessage sendMessage = new SendMessage(chat_id, mensaje);
-        sendMessage.disableNotification(true);
-        sendMessage.parseMode(ParseMode.HTML);
-        SendResponse response = bot.execute(sendMessage);
+
 
     }
 }
