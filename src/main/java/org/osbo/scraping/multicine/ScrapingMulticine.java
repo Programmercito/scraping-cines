@@ -77,8 +77,8 @@ public class ScrapingMulticine {
             bot.execute(send);
 
             result += "<b>Multicine</b>";
-            result += "<b>"+cine.getCity() + "</b>\n";
-            result += "<b>Fecha: "+DateString.getFecha("dd/MM/yyyy") + "</b>\n";
+            result += "<b>" + cine.getCity() + "</b>\n";
+            result += "<b>Fecha: " + DateString.getFecha("dd/MM/yyyy") + "</b>\n";
             for (Movies movie : cine.getMovies()) {
                 result += "<b>" + movie.getNombre() + "</b>\n" + movie.getTipo() + "\n" + movie.getHorarios() + "\n";
             }
