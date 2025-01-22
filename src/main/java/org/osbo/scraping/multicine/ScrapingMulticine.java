@@ -67,9 +67,7 @@ public class ScrapingMulticine {
             InputMediaPhoto[] imediaphoto = new InputMediaPhoto[2];
 
             InputMediaPhoto uno = new InputMediaPhoto(logomulti);
-            InputMediaPhoto dos = new InputMediaPhoto(ciudad.get(ConvertIds.getGroupId(cine.getId())));
             imediaphoto[0] = uno;
-            imediaphoto[1] = dos;
             uno.parseMode(ParseMode.HTML);
             uno.caption("<b>" + cine.getCity() + "</b>");
             SendMediaGroup send = new SendMediaGroup(chat_id, imediaphoto);
