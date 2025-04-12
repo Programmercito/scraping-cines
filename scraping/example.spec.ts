@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+test('scraping-multicine', async ({ page }) => {
+  await page.goto('https://www.multicine.com.bo/');
+  //guardo una captura de la pantalla
+  await page.screenshot({ path: 'multicine.png' });
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
 });
