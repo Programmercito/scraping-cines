@@ -1,0 +1,23 @@
+{
+  "name": "scraping-multicine",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Programmercito/scraping-multicine.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Programmercito/scraping-multicine/issues"
+  },
+  "homepage": "https://github.com/Programmercito/scraping-multicine#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.51.1",
+    "@types/node": "^22.14.1"
+  }
+}
