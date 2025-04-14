@@ -8,13 +8,26 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
   const header = page.locator('.dropdownHeader').last();
   await header.click();
   // captura de pantalla
-  await page.screenshot({ path: 'screenshot2.png' });
+  await page.screenshot({ path: 'screenshot.png' });
   const items = page.locator('.dropdownBody.open');
 
   // imprimo el contenido html de items
   const itemsHtml = await items.innerHTML();
   console.log(itemsHtml);
+
+  const dropdownItems = items.locator('.dropdownItem');
+  const count = await dropdownItems.count();
+  console.log(`Total de elementos encontrados: ${count}`);
   
-  await page.screenshot({ path: 'screenshot23.png' });
+  // saltandome el primer elemento voy a ir uno por uno dandole click esperando por click 3 segundos y sacando captura de cada uno de lllos 
+  for (let i = 1; i < count; i++) {
+    const item = dropdownItems.nth(i);
+    await item.click();
+    await page.waitForTimeout(3000); // espera para que cargue
+    // captura de pantalla
+    await page.screenshot({ path: `screenshot${i}.png` });
+    await header.click(); // vuelvo a abrir el dropdown
+  }
+  
 
 });
