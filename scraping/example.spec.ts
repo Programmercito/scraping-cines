@@ -28,7 +28,8 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
     await procesarPagina(page);
     // captura de pantalla
     await page.screenshot({ path: `screenshot${i}.png` });
-    await header.click(); // vuelvo a abrir el dropdown
+    await page.goto('https://www.multicine.com.bo/', { waitUntil: 'load' });
+    await page.waitForTimeout(3000); 
   }
 
 
