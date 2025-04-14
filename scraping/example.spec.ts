@@ -47,6 +47,7 @@ async function procesarPagina(page: Page) {
   let ciudad: Ciudad = { peliculas: [], ciudad: '' };
   let ciu=page.locator('.dropdownHeader').last();
   ciudad.ciudad = await ciu.innerText(); 
+  console.log(`Ciudad: ${ciudad.ciudad}`);
   // recorrotodos y les doy click
   if (count > 0) {
     for (let i = 0; i < count; i++) {
