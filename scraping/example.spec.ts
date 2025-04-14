@@ -1,8 +1,10 @@
 import { test, expect, Page } from '@playwright/test';
 
 test('Obtener ciudades del dropdown', async ({ page }) => {
+
   await page.goto('https://www.multicine.com.bo/', { waitUntil: 'load' });
   await page.waitForTimeout(3000); // espera para que cargue
+  await login(page);
   // captura de pantalla
   await page.screenshot({ path: 'screenshot.png' });
   const header = page.locator('.dropdownHeader').last();
@@ -59,11 +61,34 @@ interface Pelicula {
   horarios: string[];
 }
 async function procesarHorarios(page: Page) {
-    // busco el compoenten con el class class="text-size-xlarge text-weight-semibold text-color-white"
-    const titulo = await page.locator('.text-size-xlarge.text-weight-semibold.text-color-white').first();
-    let pelicula: Pelicula = { titulo: '', horarios: [] };
-    pelicula.titulo = await titulo.innerText();
-    console.log(`Titulo: ${pelicula.titulo}`);
-    // busco el componente con el class class="text-size-small text-weight-semibold text-color-white"    
+  // busco el compoenten con el class class="text-size-xlarge text-weight-semibold text-color-white"
+  const titulo = await page.locator('.text-size-xlarge.text-weight-semibold.text-color-white').first();
+  let pelicula: Pelicula = { titulo: '', horarios: [] };
+  pelicula.titulo = await titulo.innerText();
+  console.log(`Titulo: ${pelicula.titulo}`);
+  // busco el componente con el class class="text-size-small text-weight-semibold text-color-white"    
+}
+
+async function login(page: Page) {
+  // obtengo el componente top-nav_label is-mobile
+  const login = page.locator('.top-nav_label.is-mobile').first();
+  login.click();
+  // espero 3 segundos
+  await page.waitForTimeout(3000);
+  // obtengo el componte input llamado email
+  const email = page.locator('input[name="email"]').first();
+  // escribo el mail ahi juan8923242@outlook.com
+  await email.fill("juan8923242@outlook.com");
+  // obtengo el componte input llamado email
+  const password = page.locator('input[name="password"]').first();
+  // escribo el mail ahi juan8923242@outlook.com
+  await password.fill("12345678");
+  // obtengo el boton con la clase "button  is-full-width w-button false"
+  const button = page.locator('.button.is-full-width.w-button.false').first();
+  button.click();
+  // espero 3 segundos
+  await page.waitForTimeout(3000);
+  // capturo la pantalla
+  await page.screenshot({ path: 'screenshot.png' });
 }
 
