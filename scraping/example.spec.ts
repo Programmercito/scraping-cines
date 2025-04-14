@@ -17,7 +17,7 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
 
   const dropdownItems = items.locator('.dropdownItem');
   const count = await dropdownItems.count();
-  console.log(`Total de elementos encontrados: ${count}`);
+  console.log(`Total de elementos encontrados en ciudades: ${count}`);
 
   // saltandome el primer elemento voy a ir uno por uno dandole click esperando por click 3 segundos y sacando captura de cada uno de lllos 
   for (let i = 1; i < count; i++) {
@@ -29,7 +29,9 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
     // captura de pantalla
     await page.screenshot({ path: `screenshot${i}.png` });
     await page.goto('https://www.multicine.com.bo/', { waitUntil: 'load' });
-    await page.waitForTimeout(3000); 
+    await page.waitForTimeout(3000);
+    const header = page.locator('.dropdownHeader').last();
+    await header.click();
   }
 
 
@@ -52,8 +54,16 @@ async function procesarPagina(page: Page) {
   }
 
 }
-
-function procesarHorarios(page: Page) {
-  throw new Error('Function not implemented.');
+interface Pelicula {
+  titulo: string;
+  horarios: string[];
+}
+async function procesarHorarios(page: Page) {
+    // busco el compoenten con el class class="text-size-xlarge text-weight-semibold text-color-white"
+    const titulo = await page.locator('.text-size-xlarge.text-weight-semibold.text-color-white').first();
+    let pelicula: Pelicula = { titulo: '', horarios: [] };
+    pelicula.titulo = await titulo.innerText();
+    console.log(`Titulo: ${pelicula.titulo}`);
+    // busco el componente con el class class="text-size-small text-weight-semibold text-color-white"    
 }
 
