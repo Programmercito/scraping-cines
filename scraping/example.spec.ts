@@ -44,17 +44,25 @@ async function procesarPagina(page: Page) {
   const listabotones = list.locator('.button.is-small.w-button.buy_tickets.false');
   const count = await listabotones.count();
   console.log(`Total de elementos encontrados: ${count}`);
+  let ciudad: Ciudad = { peliculas: [], ciudad: '' };
+  let ciu=page.locator('.dropdownHeader').last();
+  ciudad.ciudad = await ciu.innerText(); 
   // recorrotodos y les doy click
   if (count > 0) {
     for (let i = 0; i < count; i++) {
       const item = listabotones.nth(i);
       await item.click();
       await page.waitForTimeout(3000); // espera para que cargue
-      await procesarHorarios(page); // mando a procesar la pagina a otra funcion
+      let pelicula=await procesarHorarios(page); // mando a procesar la pagina a otra funcion
       await page.goBack(); // vuelvo a la pagina anterior
+      ciudad.peliculas.push(pelicula); 
     }
   }
 
+}
+interface Ciudad{
+  peliculas: Pelicula[];
+  ciudad: string;
 }
 interface Pelicula {
   titulo: string;
@@ -66,7 +74,35 @@ async function procesarHorarios(page: Page) {
   let pelicula: Pelicula = { titulo: '', horarios: [] };
   pelicula.titulo = await titulo.innerText();
   console.log(`Titulo: ${pelicula.titulo}`);
-  // busco el componente con el class class="text-size-small text-weight-semibold text-color-white"    
+  // busco el componente con el class swiper-slide swiper-slide-next
+  await page.locator('.swiper-slide.swiper-slide-next').first().click();
+  // espero 3 segundos
+  await page.waitForTimeout(3000);
+  // busco los componentes con el class showtimewrapper
+  const horarios = page.locator('.showtimewrapper');
+  // recorro los compoenntes
+  const count = await horarios.count();
+  console.log(`Total de horarios encontrados: ${count}`);
+  // recorro los horarios
+  for (let i = 0; i < count; i++) {
+    const item = horarios.nth(i);
+    const horario=item.locator('.showtime');
+    const hora = await horario.innerText();
+    horario.click({force:true});
+    await page.waitForTimeout(3000); // espero 3 segundos
+    // obtener el objeto con la class MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways tagLink css-z4r21k
+    const objeto = page.locator('.MuiTypography-root.MuiTypography-inherit.MuiLink-root.MuiLink-underlineAlways.tagLink.css-z4r21k').first();
+    // otener el objeto con el class language-tag
+    const lenguaje = page.locator('.language-tag').first();
+    // obtener el texto del objeto
+    const tipopelicula = await objeto.innerText();
+    const lenguajeTexto = await lenguaje.innerText();
+    pelicula.horarios.push(hora+" "+tipopelicula+" "+lenguajeTexto);
+    console.log(`Horario: ${hora} ${tipopelicula} ${lenguajeTexto}`);
+    await page.goBack(); 
+  } 
+  await page.goBack(); 
+  return pelicula;
 }
 
 async function login(page: Page) {
@@ -84,10 +120,11 @@ async function login(page: Page) {
   // escribo el mail ahi juan8923242@outlook.com
   await password.fill("12345678");
   // obtengo el boton con la clase "button  is-full-width w-button false"
-  const button = page.locator('.button.is-full-width.w-button.false').first();
-  button.click();
+  const button = page.locator('.button.is-full-width.w-button.false').last();
+  // le doy click al boton
+  await button.click({ force: true });
   // espero 3 segundos
-  await page.waitForTimeout(3000);
+  await page.waitForTimeout(5000);
   // capturo la pantalla
   await page.screenshot({ path: 'screenshot.png' });
 }
