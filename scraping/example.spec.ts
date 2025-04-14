@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 
 test('Obtener ciudades del dropdown', async ({ page }) => {
   await page.goto('https://www.multicine.com.bo/', { waitUntil: 'load' });
@@ -24,6 +24,8 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
     const item = dropdownItems.nth(i);
     await item.click();
     await page.waitForTimeout(3000); // espera para que cargue
+    // mando a procesar la pagina a otra funcion 
+     await procesarPagina(page);
     // captura de pantalla
     await page.screenshot({ path: `screenshot${i}.png` });
     await header.click(); // vuelvo a abrir el dropdown
@@ -31,3 +33,8 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
   
 
 });
+
+function procesarPagina(page: Page) {
+  throw new Error('Function not implemented.');
+}
+
