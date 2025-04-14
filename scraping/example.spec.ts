@@ -39,6 +39,20 @@ async function procesarPagina(page: Page) {
   const listabotones = list.locator('.button.is-small.w-button.buy_tickets.false');
   const count = await listabotones.count();
   console.log(`Total de elementos encontrados: ${count}`);
+  // recorrotodos y les doy click
+  if (count > 0) {
+    for (let i = 0; i < count; i++) {
+      const item = listabotones.nth(i);
+      await item.click();
+      await page.waitForTimeout(3000); // espera para que cargue
+      await procesarHorarios(page); // mando a procesar la pagina a otra funcion
+      await page.goBack(); // vuelvo a la pagina anterior
+    }
+  }
 
+}
+
+function procesarHorarios(page: Page) {
+  throw new Error('Function not implemented.');
 }
 
