@@ -1,36 +1,20 @@
 import { test, expect } from '@playwright/test';
 
-test('scraping-multicine', async ({ page }) => {
-  await page.goto('https://www.multicine.com.bo/', { waitUntil: 'networkidle' });
-  await page.waitForTimeout(2000);
-  await page.screenshot({ path: 'multicine.png' });
+test('Obtener ciudades del dropdown', async ({ page }) => {
+  await page.goto('https://www.multicine.com.bo/', { waitUntil: 'load' });
+  await page.waitForTimeout(3000); // espera para que cargue
+  // captura de pantalla
+  await page.screenshot({ path: 'screenshot.png' });
+  const header = page.locator('.dropdownHeader').last();
+  await header.click();
+  // captura de pantalla
+  await page.screenshot({ path: 'screenshot2.png' });
+  const items = page.locator('.dropdownBody.open');
 
-  // Modificar directamente el DOM saltándose la capa de React
-  await page.evaluate(() => {
-    // Encontrar el elemento del dropdown
-    const dropdown = document.querySelector('.dropdownBody');
-    if (dropdown) {
-      // Guardar contenido del dropdown para uso posterior
-      const dropdownContent = dropdown.innerHTML;
-      
-      // Crear un nuevo elemento que contenga ese contenido pero sea visible
-      const visibleDropdown = document.createElement('div');
-      visibleDropdown.innerHTML = dropdownContent;
-      visibleDropdown.style.position = 'fixed';
-      visibleDropdown.style.top = '100px';
-      visibleDropdown.style.left = '50px';
-      visibleDropdown.style.backgroundColor = 'white';
-      visibleDropdown.style.zIndex = '9999';
-      visibleDropdown.style.border = '2px solid red';
-      visibleDropdown.style.padding = '10px';
-      
-      // Añadir este nuevo elemento al DOM (fuera del control de React)
-      document.body.appendChild(visibleDropdown);
-      
-      console.log('Contenido del dropdown extraído y mostrado');
-    }
-  });
+  // imprimo el contenido html de items
+  const itemsHtml = await items.innerHTML();
+  console.log(itemsHtml);
   
-  await page.waitForTimeout(2000);
-  await page.screenshot({ path: 'multicine-content-visible.png' });
+  await page.screenshot({ path: 'screenshot23.png' });
+
 });
