@@ -122,9 +122,10 @@ async function procesarHorarios(page: Page) {
         console.log(`Horario: ${hora} ${tipopelicula} ${lenguajeTexto}`);
         await page.goBack();
         await page.waitForTimeout(3000); // espero 3 segundosS
+        // captura de pantalla con el nombre de lista horarios
+        await page.screenshot({ path: `screenshot-horario-${i}.png` });
       }
-      await page.goBack();
-      await page.waitForTimeout(3000); // espero 3 segundos
+      // capturas de pantalla retorno a la pelicula
       return pelicula;
     } else {
       return null;
