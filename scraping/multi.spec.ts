@@ -22,6 +22,8 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
     const item = dropdownItems.nth(i);
     await item.click();
     await page.waitForTimeout(3000); // espera para que cargue
+    // captura de pantalla con el id i
+    await page.screenshot({ path: `screenshot-ciudad-${i}.png` });
     // mando a procesar la pagina a otra funcion 
     await procesarPagina(page);
 
@@ -49,12 +51,16 @@ async function procesarPagina(page: Page) {
       const item = listabotones.nth(i);
       await item.click();
       await page.waitForTimeout(3000); // espera para que cargue
-      let pelicula = await procesarHorarios(page); // mando a procesar la pagina a otra funcion
+      
+      await page.screenshot({ path: `screenshot-pelicula-${i}.png` });
+
+      //let pelicula = await procesarHorarios(page); // mando a procesar la pagina a otra funcion
       await page.goBack(); // vuelvo a la pagina anterior
-      if (pelicula) {
-        ciudad.peliculas.push(pelicula);
-      }
-      console.log('regresando de procesarHorarios');
+      await page.waitForTimeout(3000); // espero 3 segundos
+      //if (pelicula) {
+      //  ciudad.peliculas.push(pelicula);
+      //}
+      // genera captura de la pelicula en la pantalla
     }
   }
 
