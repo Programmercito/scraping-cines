@@ -56,7 +56,10 @@ async function procesarPagina(page: Page) {
       await page.waitForTimeout(3000); // espera para que cargue
       let pelicula = await procesarHorarios(page); // mando a procesar la pagina a otra funcion
       await page.goBack(); // vuelvo a la pagina anterior
-      ciudad.peliculas.push(pelicula);
+      if (pelicula) {
+        ciudad.peliculas.push(pelicula);
+      }
+      console.log('regresando de procesarHorarios');
     }
   }
 
@@ -80,7 +83,7 @@ async function procesarHorarios(page: Page) {
   // verificamos si fecha ha sido encontrado
   if (fecha) {
     // busco el componente con el class showtimewrapper
-    const diacito=fecha.locator('.text-size-xlarge.text-weight-bold');
+    const diacito = fecha.locator('.text-size-xlarge.text-weight-bold');
 
     const fechaTexto = await diacito.innerText();
     console.log(`Fecha: ${fechaTexto}`);
