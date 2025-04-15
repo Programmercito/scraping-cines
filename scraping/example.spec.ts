@@ -89,6 +89,12 @@ async function procesarHorarios(page: Page) {
     const item = horarios.nth(i);
     const horario=item.locator('.showtime');
     const hora = await horario.innerText();
+    // si horario tiene la class btn-disable se lo quito
+    const className = await horario.getAttribute('class');
+    if (className && className.includes('btn-disable')) {
+      // quito la class btn-disable a horario
+      await horario.evaluate((el: any) => el.classList.remove('btn-disable'));
+    }
     horario.click({force:true});
     await page.waitForTimeout(3000); // espero 3 segundos
     // obtener el objeto con la class MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways tagLink css-z4r21k
@@ -97,7 +103,8 @@ async function procesarHorarios(page: Page) {
     const lenguaje = page.locator('.language-tag').first();
     // obtener el texto del objeto
     const tipopelicula = await objeto.innerText();
-    const lenguajeTexto = await lenguaje.innerText();
+    const lenguajeTexto = (await lenguaje.innerText()).substring(0, 2);
+    
     pelicula.horarios.push(hora+" "+tipopelicula+" "+lenguajeTexto);
     console.log(`Horario: ${hora} ${tipopelicula} ${lenguajeTexto}`);
     await page.goBack(); 
@@ -130,3 +137,10 @@ async function login(page: Page) {
   await page.screenshot({ path: 'screenshot.png' });
 }
 
+async function diaManana(){
+  // es un metodo para decir en int el dia de ma;ana es por ejemplo hoy es 14 ma;an es 15
+  const hoy = new Date();
+  const manana = new Date(hoy.getTime() + (24 * 60 * 60 * 1000));
+  const dia = manana.getDate();
+  return dia;
+}
