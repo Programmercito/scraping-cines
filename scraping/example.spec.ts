@@ -45,8 +45,8 @@ async function procesarPagina(page: Page) {
   const count = await listabotones.count();
   console.log(`Total de elementos encontrados: ${count}`);
   let ciudad: Ciudad = { peliculas: [], ciudad: '' };
-  let ciu=page.locator('.dropdownHeader').last();
-  ciudad.ciudad = await ciu.innerText(); 
+  let ciu = page.locator('.dropdownHeader').last();
+  ciudad.ciudad = await ciu.innerText();
   console.log(`Ciudad: ${ciudad.ciudad}`);
   // recorrotodos y les doy click
   if (count > 0) {
@@ -54,14 +54,14 @@ async function procesarPagina(page: Page) {
       const item = listabotones.nth(i);
       await item.click();
       await page.waitForTimeout(3000); // espera para que cargue
-      let pelicula=await procesarHorarios(page); // mando a procesar la pagina a otra funcion
+      let pelicula = await procesarHorarios(page); // mando a procesar la pagina a otra funcion
       await page.goBack(); // vuelvo a la pagina anterior
-      ciudad.peliculas.push(pelicula); 
+      ciudad.peliculas.push(pelicula);
     }
   }
 
 }
-interface Ciudad{
+interface Ciudad {
   peliculas: Pelicula[];
   ciudad: string;
 }
@@ -76,41 +76,56 @@ async function procesarHorarios(page: Page) {
   pelicula.titulo = await titulo.innerText();
   console.log(`Titulo: ${pelicula.titulo}`);
   // busco el componente con el class swiper-slide swiper-slide-next
-  await page.locator('.swiper-slide.swiper-slide-next').first().click();
-  // espero 3 segundos
-  await page.waitForTimeout(3000);
-  // busco los componentes con el class showtimewrapper
-  const horarios = page.locator('.showtimewrapper');
-  // recorro los compoenntes
-  const count = await horarios.count();
-  console.log(`Total de horarios encontrados: ${count}`);
-  // recorro los horarios
-  for (let i = 0; i < count; i++) {
-    const item = horarios.nth(i);
-    const horario=item.locator('.showtime');
-    const hora = await horario.innerText();
-    // si horario tiene la class btn-disable se lo quito
-    const className = await horario.getAttribute('class');
-    if (className && className.includes('btn-disable')) {
-      // quito la class btn-disable a horario
-      await horario.evaluate((el: any) => el.classList.remove('btn-disable'));
+  const fecha = await page.locator('.swiper-slide.swiper-slide-next');
+  // verificamos si fecha ha sido encontrado
+  if (fecha) {
+    // busco el componente con el class showtimewrapper
+    const diacito=fecha.locator('.text-size-xlarge.text-weight-bold');
+
+    const fechaTexto = await diacito.innerText();
+    console.log(`Fecha: ${fechaTexto}`);
+    const dia = await diaManana();
+    if (fechaTexto === dia.toString()) {
+      // espero 3 segundos
+      await page.waitForTimeout(3000);
+      // busco los componentes con el class showtimewrapper
+      const horarios = page.locator('.showtimewrapper');
+      // recorro los compoenntes
+      const count = await horarios.count();
+      console.log(`Total de horarios encontrados: ${count}`);
+      // recorro los horarios
+      for (let i = 0; i < count; i++) {
+        const item = horarios.nth(i);
+        const horario = item.locator('.showtime');
+        const hora = await horario.innerText();
+        // si horario tiene la class btn-disable se lo quito
+        const className = await horario.getAttribute('class');
+        if (className && className.includes('btn-disable')) {
+          // quito la class btn-disable a horario
+          await horario.evaluate((el: any) => el.classList.remove('btn-disable'));
+        }
+        horario.click({ force: true });
+        await page.waitForTimeout(3000); // espero 3 segundos
+        // obtener el objeto con la class MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways tagLink css-z4r21k
+        const objeto = page.locator('.MuiTypography-root.MuiTypography-inherit.MuiLink-root.MuiLink-underlineAlways.tagLink.css-z4r21k').first();
+        // otener el objeto con el class language-tag
+        const lenguaje = page.locator('.language-tag').first();
+        // obtener el texto del objeto
+        const tipopelicula = await objeto.innerText();
+        const lenguajeTexto = (await lenguaje.innerText()).substring(0, 2);
+
+        pelicula.horarios.push(hora + " " + tipopelicula + " " + lenguajeTexto);
+        console.log(`Horario: ${hora} ${tipopelicula} ${lenguajeTexto}`);
+        await page.goBack();
+      }
+      await page.goBack();
+      return pelicula;
+    } else {
+      return null;
     }
-    horario.click({force:true});
-    await page.waitForTimeout(3000); // espero 3 segundos
-    // obtener el objeto con la class MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways tagLink css-z4r21k
-    const objeto = page.locator('.MuiTypography-root.MuiTypography-inherit.MuiLink-root.MuiLink-underlineAlways.tagLink.css-z4r21k').first();
-    // otener el objeto con el class language-tag
-    const lenguaje = page.locator('.language-tag').first();
-    // obtener el texto del objeto
-    const tipopelicula = await objeto.innerText();
-    const lenguajeTexto = (await lenguaje.innerText()).substring(0, 2);
-    
-    pelicula.horarios.push(hora+" "+tipopelicula+" "+lenguajeTexto);
-    console.log(`Horario: ${hora} ${tipopelicula} ${lenguajeTexto}`);
-    await page.goBack(); 
-  } 
-  await page.goBack(); 
-  return pelicula;
+  } else {
+    return null;
+  }
 }
 
 async function login(page: Page) {
@@ -137,7 +152,7 @@ async function login(page: Page) {
   await page.screenshot({ path: 'screenshot.png' });
 }
 
-async function diaManana(){
+async function diaManana() {
   // es un metodo para decir en int el dia de ma;ana es por ejemplo hoy es 14 ma;an es 15
   const hoy = new Date();
   const manana = new Date(hoy.getTime() + (24 * 60 * 60 * 1000));
