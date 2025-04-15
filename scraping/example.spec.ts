@@ -5,12 +5,8 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
   await page.goto('https://www.multicine.com.bo/', { waitUntil: 'load' });
   await page.waitForTimeout(3000); // espera para que cargue
   await login(page);
-  // captura de pantalla
-  await page.screenshot({ path: 'screenshot.png' });
   const header = page.locator('.dropdownHeader').last();
   await header.click();
-  // captura de pantalla
-  await page.screenshot({ path: 'screenshot.png' });
   const items = page.locator('.dropdownBody.open');
 
   // imprimo el contenido html de items
@@ -28,8 +24,7 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
     await page.waitForTimeout(3000); // espera para que cargue
     // mando a procesar la pagina a otra funcion 
     await procesarPagina(page);
-    // captura de pantalla
-    await page.screenshot({ path: `screenshot${i}.png` });
+
     await page.goto('https://www.multicine.com.bo/', { waitUntil: 'load' });
     await page.waitForTimeout(3000);
     const header = page.locator('.dropdownHeader').last();
@@ -151,8 +146,7 @@ async function login(page: Page) {
   await button.click({ force: true });
   // espero 3 segundos
   await page.waitForTimeout(5000);
-  // capturo la pantalla
-  await page.screenshot({ path: 'screenshot.png' });
+
 }
 
 async function diaManana() {
