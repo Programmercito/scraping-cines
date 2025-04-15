@@ -51,10 +51,10 @@ async function procesarPagina(page: Page) {
       const item = listabotones.nth(i);
       await item.click();
       await page.waitForTimeout(3000); // espera para que cargue
-      
+
       await page.screenshot({ path: `screenshot-pelicula-${i}.png` });
 
-      //let pelicula = await procesarHorarios(page); // mando a procesar la pagina a otra funcion
+      let pelicula = await procesarHorarios(page); // mando a procesar la pagina a otra funcion
       await page.goBack(); // vuelvo a la pagina anterior
       await page.waitForTimeout(3000); // espero 3 segundos
       //if (pelicula) {
