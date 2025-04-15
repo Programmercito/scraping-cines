@@ -121,8 +121,10 @@ async function procesarHorarios(page: Page) {
         pelicula.horarios.push(hora + " " + tipopelicula + " " + lenguajeTexto);
         console.log(`Horario: ${hora} ${tipopelicula} ${lenguajeTexto}`);
         await page.goBack();
+        await page.waitForTimeout(3000); // espero 3 segundosS
       }
       await page.goBack();
+      await page.waitForTimeout(3000); // espero 3 segundos
       return pelicula;
     } else {
       return null;
