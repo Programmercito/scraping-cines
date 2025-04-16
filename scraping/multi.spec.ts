@@ -26,7 +26,10 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
   const bot = new TeleBot({
     token: token,
   });
-
+  await bot.start(); 
+  await bot.sendMessage(chatId, ".", { disable_notification: true })
+    .then(() => console.log('Mensaje enviado'))
+    .catch((error) => console.error('Error al enviar el mensaje:', error));
 
   // Recorre las ciudades (excepto la primera que es el mensaje de selección)
   for (let i = 1; i < count; i++) {
@@ -48,14 +51,16 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
     const header = page.locator('.dropdownHeader').last();
     await header.click();
   }
+
+
   // envio el array
-  bot.sendMessage(chatId, cine, { disable_notification: true })
+  await bot.sendMessage(chatId, cine, { disable_notification: true })
     .then(() => console.log('Mensaje enviado'))
     .catch((error) => console.error('Error al enviar el mensaje:', error));
 
   for (const ciudad of ciudadArray) {
 
-    bot.sendMessage(chatId, ciudad, { disable_notification: true })
+    await bot.sendMessage(chatId, await ciudad, { disable_notification: true })
       .then(() => console.log('Mensaje enviado'))
       .catch((error) => console.error('Error al enviar el mensaje:', error));
 
@@ -95,7 +100,7 @@ async function procesarPagina(page: Page) {
       }
     }
   }
-  const total = ciudadString(ciudad);
+  const total = await ciudadString(ciudad);
   console.log(total);
   return total;
 }
