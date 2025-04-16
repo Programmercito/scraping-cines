@@ -23,7 +23,7 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
     await page.waitForTimeout(7500); // espera a que cargue la ciudad seleccionada
 
     // Guarda captura de la página con la ciudad seleccionada
-    await page.screenshot({ path: `screenshot-ciudad-${i}.png` });
+    //await page.screenshot({ path: `screenshot-ciudad-${i}.png` });
 
     // Procesa las películas de esta ciudad
     await procesarPagina(page);
@@ -55,13 +55,13 @@ async function procesarPagina(page: Page) {
       await page.waitForTimeout(7500); // espera a que cargue la información de la película
 
       // Guarda captura de la pantalla de detalles de la película
-      await page.screenshot({ path: `screenshot-pelicula-${i}.png` });
+      //await page.screenshot({ path: `screenshot-pelicula-${i}.png` });
 
       // Procesa los horarios de la película actual
       let pelicula = await procesarHorarios(page);
       //await page.goBack(); // vuelve a la lista de películas
       //await page.waitForTimeout(7500); // espera a que cargue la lista de películas
-      await page.screenshot({ path: `screenshot-peliculaxx-${i}.png` });
+      //await page.screenshot({ path: `screenshot-peliculaxx-${i}.png` });
       // Deshabilitado: Agregar la película al objeto ciudad
       if (pelicula) {
         ciudad.peliculas.push(pelicula);
@@ -153,7 +153,7 @@ async function procesarHorarios(page: Page) {
       await page.waitForTimeout(7500);
 
       // Captura de pantalla después de volver a la lista de horarios
-      await page.screenshot({ path: `screenshot-horario-${i}.png` });
+      //await page.screenshot({ path: `screenshot-horario-${i}.png` });
     }
     await page.goBack();
     await page.waitForTimeout(7500);
