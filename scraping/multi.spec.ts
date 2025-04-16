@@ -18,6 +18,18 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
   const count = await dropdownItems.count();
   console.log(`Total de elementos encontrados en ciudades: ${count - 1}`);
   const ciudadArray: string[] = [];
+  dotenv.config();
+  const token = process.env.TOKEN;
+  const chatId = process.env.CHATID;
+  const cine = process.env.CINE;
+
+  const bot = new TeleBot({
+    token: token,
+  });
+  
+  bot.sendMessage(chatId, cine)
+    .then(() => console.log('Mensaje enviado'))
+    .catch((error) => console.error('Error al enviar el mensaje:', error));
 
   // Recorre las ciudades (excepto la primera que es el mensaje de selección)
   for (let i = 1; i < count; i++) {
@@ -40,19 +52,6 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
     await header.click();
   }
   // envio el array
-  dotenv.config();
-  const token = process.env.TOKEN;
-  const chatId = process.env.CHATID;
-  const cine = process.env.CINE;
-
-  const bot = new TeleBot({
-    token: token,
-  });
-
-
-  bot.sendMessage(chatId, cine)
-    .then(() => console.log('Mensaje enviado'))
-    .catch((error) => console.error('Error al enviar el mensaje:', error));
 
   for (const ciudad of ciudadArray) {
 
