@@ -1,4 +1,6 @@
 import { test, expect, Page } from '@playwright/test';
+import dotenv from 'dotenv';
+import TeleBot from "telebot";
 
 test('Obtener ciudades del dropdown', async ({ page }) => {
 
@@ -15,6 +17,7 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
   const dropdownItems = items.locator('.dropdownItem');
   const count = await dropdownItems.count();
   console.log(`Total de elementos encontrados en ciudades: ${count - 1}`);
+  const ciudadArray: string[] = [];
 
   // Recorre las ciudades (excepto la primera que es el mensaje de selección)
   for (let i = 1; i < count; i++) {
@@ -25,14 +28,34 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
     // Guarda captura de la página con la ciudad seleccionada
     //await page.screenshot({ path: `screenshot-ciudad-${i}.png` });
 
-    // Procesa las películas de esta ciudad
-    await procesarPagina(page);
+    // Procesa las películas de esta ciudad y lo guargo en un array de strings
+    const ciudad = await procesarPagina(page);
+    // lo guargo en un array
+    ciudadArray.push(ciudad);
 
     // Vuelve a la página principal para seleccionar la siguiente ciudad
     await page.goto('https://www.multicine.com.bo/', { waitUntil: 'load' });
     await page.waitForTimeout(7500);
     const header = page.locator('.dropdownHeader').last();
     await header.click();
+  }
+  // envio el array
+  dotenv.config();
+  const token = process.env.TOKEN;
+  const chatId = process.env.CHATID;
+  const cine = process.env.CINE;
+
+  const bot = new TeleBot({
+    token: token,
+  });
+
+
+  bot.sendMessage(chatId, cine)
+    .then(() => console.log('Mensaje enviado'))
+    .catch((error) => console.error('Error al enviar el mensaje:', error));
+
+  for (const ciudad of ciudadArray) {
+    console.log(ciudad);
   }
 });
 
@@ -69,9 +92,8 @@ async function procesarPagina(page: Page) {
     }
   }
   const total = ciudadString(ciudad);
-  console.log('********');
   console.log(total);
-  console.log('********');
+  return total;
 }
 
 interface Ciudad {
