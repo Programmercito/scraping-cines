@@ -26,10 +26,7 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
   const bot = new TeleBot({
     token: token,
   });
-  
-  bot.sendMessage(chatId, cine)
-    .then(() => console.log('Mensaje enviado'))
-    .catch((error) => console.error('Error al enviar el mensaje:', error));
+
 
   // Recorre las ciudades (excepto la primera que es el mensaje de selección)
   for (let i = 1; i < count; i++) {
@@ -52,10 +49,13 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
     await header.click();
   }
   // envio el array
+  bot.sendMessage(chatId, cine, { disable_notification: true })
+    .then(() => console.log('Mensaje enviado'))
+    .catch((error) => console.error('Error al enviar el mensaje:', error));
 
   for (const ciudad of ciudadArray) {
 
-    bot.sendMessage(chatId, ciudad)
+    bot.sendMessage(chatId, ciudad, { disable_notification: true })
       .then(() => console.log('Mensaje enviado'))
       .catch((error) => console.error('Error al enviar el mensaje:', error));
 
