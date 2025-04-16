@@ -1,5 +1,6 @@
 import { test, expect, Page } from '@playwright/test';
 import dotenv from 'dotenv';
+import { parse } from 'path';
 import TeleBot from "telebot";
 
 test('Obtener ciudades del dropdown', async ({ page }) => {
@@ -26,7 +27,7 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
   const bot = new TeleBot({
     token: token,
   });
-  await bot.start(); 
+  await bot.start();
 
 
   // Recorre las ciudades (excepto la primera que es el mensaje de selección)
@@ -52,7 +53,10 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
 
 
   // envio el array
-  await bot.sendMessage(chatId, cine, { disable_notification: true })
+  await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diaMananaCompleto()), {
+    disable_notification: true,
+    parse_mode: 'HTML'
+  })
     .then(() => console.log('Mensaje enviado'))
     .catch((error) => console.error('Error al enviar el mensaje:', error));
 
@@ -228,11 +232,20 @@ async function diaManana() {
   const dia = manana.getDate();
   return dia;
 }
+// funcion con la fecha de ma;ana dia mes a;o
+async function diaMananaCompleto() {
+  const hoy = new Date();
+  const manana = new Date(hoy.getTime() + (24 * 60 * 60 * 1000));
+  const dia = manana.getDate();
+  const mes = manana.getMonth() + 1; // Los meses son indexados desde 0
+  const anio = manana.getFullYear();
+  return `${dia}/${mes}/${anio}`;
+}
 
 async function ciudadString(ciudad: Ciudad): Promise<string> {
   let ciudadString = `Ciudad: ${ciudad.ciudad}\n`;
   for (const pelicula of ciudad.peliculas) {
-    ciudadString += `${pelicula.titulo}\n`;
+    ciudadString += `<b>${pelicula.titulo}</b>\n`;
     for (const horario of pelicula.horarios) {
       ciudadString += `${horario}\n`;
     }
