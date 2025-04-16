@@ -3,7 +3,7 @@ import { test, expect, Page } from '@playwright/test';
 test('Obtener ciudades del dropdown', async ({ page }) => {
 
   await page.goto('https://www.multicine.com.bo/', { waitUntil: 'load' });
-  await page.waitForTimeout(6000); // espera a que la página cargue completamente
+  await page.waitForTimeout(5000); // espera a que la página cargue completamente
   await login(page);
   const header = page.locator('.dropdownHeader').last();
   await header.click();
@@ -20,7 +20,7 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
   for (let i = 1; i < count; i++) {
     const item = dropdownItems.nth(i);
     await item.click();
-    await page.waitForTimeout(6000); // espera a que cargue la ciudad seleccionada
+    await page.waitForTimeout(5000); // espera a que cargue la ciudad seleccionada
 
     // Guarda captura de la página con la ciudad seleccionada
     await page.screenshot({ path: `screenshot-ciudad-${i}.png` });
@@ -30,7 +30,7 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
 
     // Vuelve a la página principal para seleccionar la siguiente ciudad
     await page.goto('https://www.multicine.com.bo/', { waitUntil: 'load' });
-    await page.waitForTimeout(6000);
+    await page.waitForTimeout(5000);
     const header = page.locator('.dropdownHeader').last();
     await header.click();
   }
@@ -52,7 +52,7 @@ async function procesarPagina(page: Page) {
     for (let i = 0; i < count; i++) {
       const item = listabotones.nth(i);
       await item.click();
-      await page.waitForTimeout(6000); // espera a que cargue la información de la película
+      await page.waitForTimeout(5000); // espera a que cargue la información de la película
 
       // Guarda captura de la pantalla de detalles de la película
       await page.screenshot({ path: `screenshot-pelicula-${i}.png` });
@@ -60,7 +60,7 @@ async function procesarPagina(page: Page) {
       // Procesa los horarios de la película actual
       let pelicula = await procesarHorarios(page);
       await page.goBack(); // vuelve a la lista de películas
-      await page.waitForTimeout(6000); // espera a que cargue la lista de películas
+      await page.waitForTimeout(5000); // espera a que cargue la lista de películas
 
       // Deshabilitado: Agregar la película al objeto ciudad
       if (pelicula) {
@@ -95,19 +95,26 @@ async function procesarHorarios(page: Page) {
     console.log('No se encontró el título de la película');
     return null;
   }
+  const dia = await diaManana();
 
   // Busca la fecha de mañana (pestaña siguiente día)
-  const fecha = await page.locator('.swiper-slide.swiper-slide-next');
+  const fechas = await page.locator('.swiper-slide');
+  let escogido ;
+  // fechas deberais haber encontrado mas de uno si es mas de uno recorrelos todos
+  for (let i = 0; i < await fechas.count(); i++) {
+    const fechat = fechas.nth(i);
+    const fechatexto=fechat.locator('.text-size-xlarge.text-weight-bold');
+    const texto= await fechatexto.innerText();
+    if (texto===dia.toString()) {
+      escogido = fechat;
+      break; 
+    }
+  }
 
   // Verifica si existe la pestaña de fecha para mañana
-  if (fecha) {
-    const diacito = fecha.locator('.text-size-xlarge.text-weight-bold');
-    const fechaTexto = await diacito.innerText();
-    console.log(`Fecha encontrada: ${fechaTexto}`);
-
-    const dia = await diaManana();
-    if (fechaTexto === dia.toString()) {
-      await page.waitForTimeout(6000);
+  if (escogido) {
+      escogido.click({ force: true });
+      await page.waitForTimeout(5000);
 
       // Busca los contenedores de horarios disponibles
       const horarios = page.locator('.showtimewrapper');
@@ -128,7 +135,7 @@ async function procesarHorarios(page: Page) {
 
         // Hace clic en el horario para ver detalles
         horario.click({ force: true });
-        await page.waitForTimeout(6000);
+        await page.waitForTimeout(5000);
 
         // Extrae información adicional del horario (formato y lenguaje)
         const objeto = page.locator('.MuiTypography-root.MuiTypography-inherit.MuiLink-root.MuiLink-underlineAlways.tagLink.css-z4r21k').first();
@@ -141,17 +148,15 @@ async function procesarHorarios(page: Page) {
         console.log(`Horario disponible: ${hora} ${tipopelicula} ${lenguajeTexto}`);
 
         await page.goBack();
-        await page.waitForTimeout(6000);
+        await page.waitForTimeout(5000);
 
         // Captura de pantalla después de volver a la lista de horarios
         await page.screenshot({ path: `screenshot-horario-${i}.png` });
       }
-
+      await page.goBack();
+      await page.waitForTimeout(5000);
       return pelicula;
-    } else {
-      // La fecha no coincide con mañana
-      return null;
-    }
+
   } else {
     // No se encontró la pestaña para el día siguiente
     return null;
@@ -162,7 +167,7 @@ async function login(page: Page) {
   // Hace clic en el botón de inicio de sesión
   const login = page.locator('.top-nav_label.is-mobile').first();
   login.click();
-  await page.waitForTimeout(6000);
+  await page.waitForTimeout(5000);
 
   // Ingresa credenciales de usuario
   const email = page.locator('input[name="email"]').first();
@@ -176,7 +181,7 @@ async function login(page: Page) {
   await button.click({ force: true });
 
   // Espera a que se complete el inicio de sesión
-  await page.waitForTimeout(6000);
+  await page.waitForTimeout(5000);
 }
 
 async function diaManana() {
