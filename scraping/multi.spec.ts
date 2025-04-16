@@ -27,9 +27,7 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
     token: token,
   });
   await bot.start(); 
-  await bot.sendMessage(chatId, ".", { disable_notification: true })
-    .then(() => console.log('Mensaje enviado'))
-    .catch((error) => console.error('Error al enviar el mensaje:', error));
+
 
   // Recorre las ciudades (excepto la primera que es el mensaje de selección)
   for (let i = 1; i < count; i++) {
