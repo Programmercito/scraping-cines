@@ -55,6 +55,11 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
     .catch((error) => console.error('Error al enviar el mensaje:', error));
 
   for (const ciudad of ciudadArray) {
+
+    bot.sendMessage(chatId, ciudad)
+      .then(() => console.log('Mensaje enviado'))
+      .catch((error) => console.error('Error al enviar el mensaje:', error));
+
     console.log(ciudad);
   }
 });
