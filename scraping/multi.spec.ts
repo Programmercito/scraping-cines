@@ -203,7 +203,7 @@ async function diaManana() {
 async function ciudadString(ciudad: Ciudad): Promise<string> {
   let ciudadString = `Ciudad: ${ciudad.ciudad}\n`;
   for (const pelicula of ciudad.peliculas) {
-    ciudadString += `Título: ${pelicula.titulo}\nHorarios:\n`;
+    ciudadString += `${pelicula.titulo}\n`;
     for (const horario of pelicula.horarios) {
       ciudadString += `${horario}\n`;
     }
