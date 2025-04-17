@@ -62,7 +62,7 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
 
   for (const ciudad of ciudadArray) {
 
-    await bot.sendMessage(chatId, await ciudad, {
+    await bot.sendMessage(chatId, (await ciudad) + "\n" + (await diaMananaCompleto()), {
       notification: false,
       parseMode: 'html'
     })
