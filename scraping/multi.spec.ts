@@ -55,14 +55,14 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
   // envio el array
   await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diaMananaCompleto()), {
     disable_notification: true,
-    parse_mode: 'HTML'
+    parseMode: 'html'
   })
     .then(() => console.log('Mensaje enviado'))
     .catch((error) => console.error('Error al enviar el mensaje:', error));
 
   for (const ciudad of ciudadArray) {
 
-    await bot.sendMessage(chatId, await ciudad, { disable_notification: true })
+    await bot.sendMessage(chatId, await ciudad, { disable_notification: true, parseMode: 'html' })
       .then(() => console.log('Mensaje enviado'))
       .catch((error) => console.error('Error al enviar el mensaje:', error));
 
