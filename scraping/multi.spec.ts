@@ -27,7 +27,7 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
   const bot = new TeleBot({
     token: token,
   });
-  await bot.start();
+  //await bot.start();
 
 
   // Recorre las ciudades (excepto la primera que es el mensaje de selección)
