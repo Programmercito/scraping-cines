@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { parse } from 'path';
 import TeleBot from "telebot";
 
-test('Obtener ciudades del dropdown', async ({ page }) => {
+test('multicine', async ({ page }) => {
 
   await page.goto('https://www.multicine.com.bo/', { waitUntil: 'load' });
   await page.waitForTimeout(7500); // espera a que la página cargue completamente
