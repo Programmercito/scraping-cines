@@ -53,7 +53,7 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
 
 
   // envio el array
-  await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diaMananaCompleto()), {
+  await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diahoycompleto()), {
     notification: false,
     parseMode: 'html'
   })
@@ -62,7 +62,7 @@ test('Obtener ciudades del dropdown', async ({ page }) => {
 
   for (const ciudad of ciudadArray) {
 
-    await bot.sendMessage(chatId, (await ciudad) + "\n" + (await diaMananaCompleto()), {
+    await bot.sendMessage(chatId, (await ciudad) + "\n" + (await diahoycompleto()), {
       notification: false,
       parseMode: 'html'
     })
@@ -131,7 +131,7 @@ async function procesarHorarios(page: Page) {
     console.log('No se encontró el título de la película');
     return null;
   }
-  const dia = await diaManana();
+  const dia = await diahoy();
 
   // Busca la fecha de mañana (pestaña siguiente día)
   const fechas = await page.locator('.swiper-slide');
@@ -228,20 +228,18 @@ async function login(page: Page) {
   await page.waitForTimeout(7500);
 }
 
-async function diaManana() {
+async function diahoy() {
   // Calcula el número del día de mañana (ej: si hoy es 14, mañana es 15)
   const hoy = new Date();
-  const manana = new Date(hoy.getTime() + (24 * 60 * 60 * 1000));
-  const dia = manana.getDate();
+  const dia = hoy.getDate();
   return dia;
 }
 // funcion con la fecha de ma;ana dia mes a;o
-async function diaMananaCompleto() {
+async function diahoycompleto() {
   const hoy = new Date();
-  const manana = new Date(hoy.getTime() + (24 * 60 * 60 * 1000));
-  const dia = manana.getDate();
-  const mes = manana.getMonth() + 1; // Los meses son indexados desde 0
-  const anio = manana.getFullYear();
+  const dia = hoy.getDate();
+  const mes = hoy.getMonth() + 1; // Los meses son indexados desde 0
+  const anio = hoy.getFullYear();
   return `${dia}/${mes}/${anio}`;
 }
 
