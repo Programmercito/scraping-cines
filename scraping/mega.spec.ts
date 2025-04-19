@@ -94,7 +94,7 @@ async function cierraPopup(page) {
   if (boton && visible) {
     // intento hacer clic en el botón de cierre dentro del modal
     await boton.click();
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(5000);
 
   }
 }
@@ -191,7 +191,7 @@ async function procesarPagina(page: Page, ciu: string) {
     }
     ciudad.peliculas.push(pelicula);
     page.goBack();
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(4000);
     await cierraPopup(page);
 
   }
