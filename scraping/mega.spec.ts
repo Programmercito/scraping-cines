@@ -72,7 +72,7 @@ test('megacenter', async ({ page }) => {
   // envio 
   for (const ciudad of ciudadArray) {
 
-    await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await ciudad) + "\n" + (await diahoycompleto()), {
+    await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diahoycompleto()) + "\n" + (await ciudad) + "\n" + cine + "\n" + (await diahoycompleto()), {
       notification: false,
       parseMode: 'html'
     })
