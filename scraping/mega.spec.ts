@@ -162,7 +162,7 @@ async function procesarPagina(page: Page, ciu: string) {
     if (!clickeardia) {
       console.log('No se encontró el día de hoy en la lista de días.');
       page.goBack();
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(6000);
       await cierraPopup(page);
       continue; // Salimos del bucle si no encontramos el día
     }
