@@ -56,7 +56,7 @@ test('megacenter', async ({ page }) => {
       console.log(texto2);
     }
     item.click();
-    await page.waitForTimeout(6000);
+    await page.waitForTimeout(8000);
     await cierraPopup(page);
 
     // Procesa las películas de esta ciudad y lo guargo en un array de strings
