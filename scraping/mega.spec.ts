@@ -12,7 +12,7 @@ test('megacenter', async ({ page }) => {
 
   const token = process.env.TOKEN;
   const chatId = process.env.CHATID;
-  const cine = process.env.CINE;
+  const cine = process.env.CINE2;
 
   const bot = new TeleBot({
     token: token,
