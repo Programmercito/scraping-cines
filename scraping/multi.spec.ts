@@ -244,5 +244,6 @@ async function ciudadString(ciudad: Ciudad): Promise<string> {
     }
     ciudadString += '\n';
   }
+  ciudadString += `Ciudad: ${ciudad.ciudad}\n`;
   return ciudadString;
 }
