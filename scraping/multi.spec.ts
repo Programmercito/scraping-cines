@@ -144,7 +144,7 @@ async function procesarHorarios(page: Page) {
   // Verifica si existe la pestaña de fecha para mañana
   if (escogido) {
     escogido.click({ force: true });
-    await page.waitForTimeout(15500);
+    await page.waitForTimeout(17500);
 
     // Busca los contenedores de horarios disponibles
     const horarios = page.locator('.showtimewrapper');
@@ -165,7 +165,7 @@ async function procesarHorarios(page: Page) {
 
       // Hace clic en el horario para ver detalles
       horario.click({ force: true });
-      await page.waitForTimeout(15500);
+      await page.waitForTimeout(17500);
 
       // Extrae información adicional del horario (formato y lenguaje)
       const objeto = page.locator('.MuiTypography-root.MuiTypography-inherit.MuiLink-root.MuiLink-underlineAlways.tagLink.css-z4r21k').first();
@@ -178,22 +178,22 @@ async function procesarHorarios(page: Page) {
       console.log(`Horario disponible: ${hora} ${tipopelicula} ${lenguajeTexto}`);
 
       await page.goBack();
-      await page.waitForTimeout(15500);
+      await page.waitForTimeout(17500);
 
       // Captura de pantalla después de volver a la lista de horarios
       //await page.screenshot({ path: `screenshot-horario-${i}.png` });
     }
     await page.goBack();
-    await page.waitForTimeout(15500);
+    await page.waitForTimeout(17500);
     if (costo > 1) {
       await page.goBack();
-      await page.waitForTimeout(15500);
+      await page.waitForTimeout(17500);
     }
     return pelicula;
 
   } else {
     await page.goBack();
-    await page.waitForTimeout(15500);
+    await page.waitForTimeout(17500);
     // No se encontró la pestaña para el día siguiente
     return null;
   }
