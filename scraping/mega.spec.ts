@@ -21,7 +21,7 @@ test('megacenter', async ({ page }) => {
   do {
     await page.goto('https://cinecenter.com.bo/');
     // espero a que cargue 20 segundos la pagina
-    await page.waitForTimeout(5000);
+    await page.waitForTimeout(10000);
     // guardo una captura 
 
     await cierraPopup(page);
