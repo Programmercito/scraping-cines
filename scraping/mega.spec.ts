@@ -78,6 +78,7 @@ test('megacenter', async ({ page }) => {
     })
       .then(() => console.log('Mensaje enviado'))
       .catch((error) => console.error('Error al enviar el mensaje:', error));
+    await page.waitForTimeout(1000);
 
     console.log(ciudad);
   }

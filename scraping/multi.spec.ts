@@ -6,7 +6,7 @@ import TeleBot from "telebot";
 test('multicine', async ({ page }) => {
 
   await page.goto('https://www.multicine.com.bo/', { waitUntil: 'load' });
-  await page.waitForTimeout(15500); // espera a que la página cargue completamente
+  await page.waitForTimeout(20000); // espera a que la página cargue completamente
   //await login(page);
   const header = page.locator('.dropdownHeader').last();
   await header.click();
@@ -34,7 +34,7 @@ test('multicine', async ({ page }) => {
   for (let i = 1; i < count; i++) {
     const item = dropdownItems.nth(i);
     await item.click();
-    await page.waitForTimeout(15500); // espera a que cargue la ciudad seleccionada
+    await page.waitForTimeout(20000); // espera a que cargue la ciudad seleccionada
 
     // Guarda captura de la página con la ciudad seleccionada
     //await page.screenshot({ path: `screenshot-ciudad-${i}.png` });
@@ -46,7 +46,7 @@ test('multicine', async ({ page }) => {
 
     // Vuelve a la página principal para seleccionar la siguiente ciudad
     await page.goto('https://www.multicine.com.bo/', { waitUntil: 'load' });
-    await page.waitForTimeout(15500);
+    await page.waitForTimeout(20000);
     const header = page.locator('.dropdownHeader').last();
     await header.click();
   }
@@ -60,7 +60,7 @@ test('multicine', async ({ page }) => {
     })
       .then(() => console.log('Mensaje enviado'))
       .catch((error) => console.error('Error al enviar el mensaje:', error));
-
+    await page.waitForTimeout(1000);
     console.log(ciudad);
   }
 });
@@ -81,7 +81,7 @@ async function procesarPagina(page: Page) {
     for (let i = 0; i < count; i++) {
       const item = listabotones.nth(i);
       await item.click();
-      await page.waitForTimeout(15500); // espera a que cargue la información de la película
+      await page.waitForTimeout(20000); // espera a que cargue la información de la película
 
       // Guarda captura de la pantalla de detalles de la película
       //await page.screenshot({ path: `screenshot-pelicula-${i}.png` });
@@ -144,7 +144,7 @@ async function procesarHorarios(page: Page) {
   // Verifica si existe la pestaña de fecha para mañana
   if (escogido) {
     escogido.click({ force: true });
-    await page.waitForTimeout(17500);
+    await page.waitForTimeout(20000);
 
     // Busca los contenedores de horarios disponibles
     const horarios = page.locator('.showtimewrapper');
@@ -165,7 +165,7 @@ async function procesarHorarios(page: Page) {
 
       // Hace clic en el horario para ver detalles
       horario.click({ force: true });
-      await page.waitForTimeout(17500);
+      await page.waitForTimeout(20000);
 
       // Extrae información adicional del horario (formato y lenguaje)
       const objeto = page.locator('.MuiTypography-root.MuiTypography-inherit.MuiLink-root.MuiLink-underlineAlways.tagLink.css-z4r21k').first();
@@ -178,22 +178,22 @@ async function procesarHorarios(page: Page) {
       console.log(`Horario disponible: ${hora} ${tipopelicula} ${lenguajeTexto}`);
 
       await page.goBack();
-      await page.waitForTimeout(17500);
+      await page.waitForTimeout(20000);
 
       // Captura de pantalla después de volver a la lista de horarios
       //await page.screenshot({ path: `screenshot-horario-${i}.png` });
     }
     await page.goBack();
-    await page.waitForTimeout(17500);
+    await page.waitForTimeout(20000);
     if (costo > 1) {
       await page.goBack();
-      await page.waitForTimeout(17500);
+      await page.waitForTimeout(20000);
     }
     return pelicula;
 
   } else {
     await page.goBack();
-    await page.waitForTimeout(17500);
+    await page.waitForTimeout(20000);
     // No se encontró la pestaña para el día siguiente
     return null;
   }
@@ -203,7 +203,7 @@ async function login(page: Page) {
   // Hace clic en el botón de inicio de sesión
   const login = page.locator('.top-nav_label.is-mobile').first();
   login.click();
-  await page.waitForTimeout(15500);
+  await page.waitForTimeout(20000);
 
   // Ingresa credenciales de usuario
   const email = page.locator('input[name="email"]').first();
@@ -217,7 +217,7 @@ async function login(page: Page) {
   await button.click({ force: true });
 
   // Espera a que se complete el inicio de sesión
-  await page.waitForTimeout(15500);
+  await page.waitForTimeout(20000);
 }
 
 async function diahoy() {
