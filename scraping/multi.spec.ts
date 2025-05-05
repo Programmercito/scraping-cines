@@ -134,8 +134,10 @@ async function procesarHorarios(page: Page) {
     const fechat = fechas.nth(i);
     const fechatexto = fechat.locator('.text-size-xlarge.text-weight-bold');
     const texto = await fechatexto.innerText();
+    // texto puede venir asi 04 o 05 o 06 como lo vuelvo a su entero osea 4, 5,6 
+    const tex = parseInt(texto);
     costo += 1;
-    if (texto === dia.toString()) {
+    if (tex === dia) {
       escogido = fechat;
       break;
     }
@@ -146,49 +148,28 @@ async function procesarHorarios(page: Page) {
     escogido.click({ force: true });
     await page.waitForTimeout(20000);
 
-    // Busca los contenedores de horarios disponibles
-    const horarios = page.locator('.showtimewrapper');
-    const count = await horarios.count();
-    console.log(`Total de horarios encontrados: ${count}`);
-
-    // Procesa cada horario individualmente
+    const tipospeli = page.locator('.showtimesrow');
+    const count = await tipospeli.count();
     for (let i = 0; i < count; i++) {
-      const item = horarios.nth(i);
-      const horario = item.locator('.showtime');
-      const hora = await horario.innerText();
-
-      // Habilita horarios deshabilitados para poder hacer clic
-      const className = await horario.getAttribute('class');
-      if (className && className.includes('btn-disable')) {
-        await horario.evaluate((el: any) => el.classList.remove('btn-disable'));
+      const item = tipospeli.nth(i);
+      // obtengo titulo
+      const formato = item.locator('.text-size-regular.text-color-gray').first();
+      const formatotit = await formato.innerText();
+      const horarios = item.locator('.showtimewrapper');
+      const counthorarios = await horarios.count();
+      for (let j = 0; j < counthorarios; j++) {
+        // obtendo el idioma
+        const idioma = horarios.nth(j).locator('.is-small');
+        const idiomaTexto = await idioma.innerText();
+        // obtengo el hoario
+        const horario = horarios.nth(j).locator('.showtime');
+        const horarioTexto = await horario.innerText();
+        pelicula.horarios.push(`${horarioTexto} ${idiomaTexto} ${formatotit}`);
+        console.log(`Horario: ${horarioTexto} ${idiomaTexto} ${formatotit}`);
       }
-
-      // Hace clic en el horario para ver detalles
-      horario.click({ force: true });
-      await page.waitForTimeout(20000);
-
-      // Extrae información adicional del horario (formato y lenguaje)
-      const objeto = page.locator('.MuiTypography-root.MuiTypography-inherit.MuiLink-root.MuiLink-underlineAlways.tagLink.css-z4r21k').first();
-      const lenguaje = page.locator('.language-tag').first();
-      const tipopelicula = await objeto.innerText();
-      const lenguajeTexto = (await lenguaje.innerText()).substring(0, 2);
-
-      // Guarda la información completa del horario
-      pelicula.horarios.push(hora + " " + tipopelicula + " " + lenguajeTexto);
-      console.log(`Horario disponible: ${hora} ${tipopelicula} ${lenguajeTexto}`);
-
-      await page.goBack();
-      await page.waitForTimeout(20000);
-
-      // Captura de pantalla después de volver a la lista de horarios
-      //await page.screenshot({ path: `screenshot-horario-${i}.png` });
     }
     await page.goBack();
-    await page.waitForTimeout(20000);
-    if (costo > 1) {
-      await page.goBack();
-      await page.waitForTimeout(20000);
-    }
+    await page.waitForTimeout(3000);
     return pelicula;
 
   } else {
