@@ -147,11 +147,12 @@ async function procesarPagina(page: Page, ciu: string) {
       console.log(texto);
       pelicula.titulo = texto;
     }
-    const dias = page.locator('.e-btn');
+    const dias = page.locator('.opcion-fecha');
     const diaco = await dias.count();
+    console.log('Cantidad de dias: ' + diaco);
     const este = await diahoy();
     let clickeardia: any;
-    for (let j = 0; j < 2; j++) {
+    for (let j = 0; j < diaco; j++) {
       const dia = dias.nth(j);
       const numero = await dia.locator('div[style*="font-size:60px"]').innerText();
       //console.log('Número:', numero);
@@ -169,7 +170,6 @@ async function procesarPagina(page: Page, ciu: string) {
     }
     clickeardia.click();
     await page.waitForTimeout(2000);
-
     const formatos = page.locator('.btn-formato.btn-formato-selected');
     const formacount = await formatos.count();
     for (let j = 0; j < formacount; j++) {
