@@ -170,7 +170,7 @@ async function procesarPagina(page: Page, ciu: string) {
     }
     clickeardia.click();
     await page.waitForTimeout(2000);
-    const formatos = page.locator('.btn-formato.btn-formato-selected');
+    const formatos = page.locator('.btn-formato');
     const formacount = await formatos.count();
     for (let j = 0; j < formacount; j++) {
       const formato = formatos.nth(j);
