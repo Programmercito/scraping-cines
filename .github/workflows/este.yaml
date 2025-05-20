@@ -25,6 +25,8 @@ jobs:
         chmod 600 ./private_key
         ssh -o StrictHostKeyChecking=no -i ./private_key ${{ secrets.USER }}@${{ secrets.SERVER }} "cd /opt/botcine && rm -rf *"
         scp -o StrictHostKeyChecking=no -i ./private_key -r ./* ${{ secrets.USER }}@${{ secrets.SERVER }}:/opt/botcine
+        ssh -o StrictHostKeyChecking=no -i ./private_key ${{ secrets.USER }}@${{ secrets.SERVER }} "cp /opt/deploy/"
+        ssh -o StrictHostKeyChecking=no -i ./private_key ${{ secrets.USER }}@${{ secrets.SERVER }} "git pull"
         ssh -o StrictHostKeyChecking=no -i ./private_key ${{ secrets.USER }}@${{ secrets.SERVER }} "cp /opt/deploy/botcine/docker/play.dockerfile /opt/botcine"
         ssh -o StrictHostKeyChecking=no -i ./private_key ${{ secrets.USER }}@${{ secrets.SERVER }} "cd /opt/botcine && ls -la"
         ssh -o StrictHostKeyChecking=no -i ./private_key ${{ secrets.USER }}@${{ secrets.SERVER }} "docker build -t localhost:32000/botcine:latest -f /opt/botcine/play.dockerfile /opt/botcine/"
