@@ -24,7 +24,6 @@ jobs:
       run: |
         echo "${{ secrets.KEY }}" > ./private_key
         chmod 600 ./private_key
-        ls -la
         ssh -o StrictHostKeyChecking=no -i ./private_key ${{ secrets.USER }}@${{ secrets.SERVER }} "cd /opt/botcine && rm -rf *"
         scp -o StrictHostKeyChecking=no -i ./private_key -r ./* ${{ secrets.USER }}@${{ secrets.SERVER }}:/opt/botcine
         ssh -o StrictHostKeyChecking=no -i ./private_key ${{ secrets.USER }}@${{ secrets.SERVER }} "cd /opt/codes/bot-dockers && git pull"
