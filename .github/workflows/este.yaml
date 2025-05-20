@@ -12,7 +12,8 @@ jobs:
     
     runs-on: ubuntu-latest
     steps:
-    
+    - name: Checkout code
+      uses: actions/checkout@v4    
     - name: config copy files
       run: |
         mkdir -p ~/.ssh
