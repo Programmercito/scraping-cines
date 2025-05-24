@@ -13,6 +13,7 @@ test('megacenter', async ({ page }) => {
   const token = process.env.TOKEN;
   const chatId = process.env.CHATID;
   const cine = process.env.CINE2;
+  const telegram = process.env.TELEGRAM;
 
   const bot = new TeleBot({
     token: token,
@@ -69,18 +70,20 @@ test('megacenter', async ({ page }) => {
 
   // envio 
   for (const ciudad of ciudadArray) {
+    if (telegram === 'true') {
 
-    await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diahoycompleto()) + "\n" + (await ciudad) + "\n" + cine + "\n" + (await diahoycompleto()), {
-      notification: false,
-      parseMode: 'html'
-    })
-      .then(() => console.log('Mensaje enviado'))
-      .catch((error) => console.error('Error al enviar el mensaje:', error));
-    await page.waitForTimeout(1000);
+      await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diahoycompleto()) + "\n" + (await ciudad) + "\n" + cine + "\n" + (await diahoycompleto()), {
+        notification: false,
+        parseMode: 'html'
+      })
+        .then(() => console.log('Mensaje enviado'))
+        .catch((error) => console.error('Error al enviar el mensaje:', error));
+      await page.waitForTimeout(1000);
 
+    }
     console.log(ciudad);
-  }
 
+  }
 });
 
 async function cierraPopup(page) {
