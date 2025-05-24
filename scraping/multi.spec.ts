@@ -23,6 +23,7 @@ test('multicine', async ({ page }) => {
   const token = process.env.TOKEN;
   const chatId = process.env.CHATID;
   const cine = process.env.CINE;
+  const telegram = process.env.TELEGRAM;
 
   const bot = new TeleBot({
     token: token,
@@ -53,14 +54,15 @@ test('multicine', async ({ page }) => {
 
 
   for (const ciudad of ciudadArray) {
-
-    await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diahoycompleto()) + "\n" + (await ciudad) + "\n" + cine + "\n" + (await diahoycompleto()), {
-      notification: false,
-      parseMode: 'html'
-    })
-      .then(() => console.log('Mensaje enviado'))
-      .catch((error) => console.error('Error al enviar el mensaje:', error));
-    await page.waitForTimeout(1000);
+    if (telegram === 'true') {
+      await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diahoycompleto()) + "\n" + (await ciudad) + "\n" + cine + "\n" + (await diahoycompleto()), {
+        notification: false,
+        parseMode: 'html'
+      })
+        .then(() => console.log('Mensaje enviado'))
+        .catch((error) => console.error('Error al enviar el mensaje:', error));
+      await page.waitForTimeout(1000);
+    }
     console.log(ciudad);
   }
 });
