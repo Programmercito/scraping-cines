@@ -42,10 +42,7 @@ test('megacenter', async ({ page }) => {
     // espero 2 segundos
     await page.waitForTimeout(2000);
     // capturo pantalla de cada uno de los componentes
-    await page.screenshot({ path: `cinecenter abierto.png` });
-
     const lista = page.locator('.e-ddl.e-control.e-lib.e-popup.background.e-popup-open');
-
     // recorro todos los elementos de la lista
     const lis = lista.locator('.e-list-item');
     count = await lis.count();
@@ -58,7 +55,8 @@ test('megacenter', async ({ page }) => {
     item.click();
     await page.waitForTimeout(8000);
     await cierraPopup(page);
-
+    // captura pantalla con el nombre de la ciudad
+    await page.screenshot({ path: `/opt/screenshot-ciudad-${o}.png` });
     // Procesa las películas de esta ciudad y lo guargo en un array de strings
     const ciudad = await procesarPagina(page, texto2);
     // lo guargo en un array
