@@ -97,14 +97,16 @@ async function refrescarPagina(page: Page) {
 
 async function cierraPopup(page, reload = false) {
   if (reload) {
-    const listapelis = page.locator('.items-container.multifila').first();
+    let listapelis = page.locator('.items-container.multifila').first();
     // recorro la lista
-    const lista = listapelis.locator('.item-container');
+    let lista = listapelis.locator('.item-container');
     let coun = await lista.count();
     let intentos = 0;
 
     while (coun === 0 && intentos < 5) {
       await refrescarPagina(page);
+      listapelis = page.locator('.items-container.multifila').first();
+      lista = listapelis.locator('.item-container');
       coun = await lista.count();
       intentos++;
       console.log(`Intento ${intentos} - elementos encontrados: ${coun}`);
@@ -171,17 +173,18 @@ async function procesarPagina(page: Page, ciu: string) {
       console.log(texto);
       pelicula.titulo = texto;
     }
-    const dias = page.locator('.opcion-fecha');
+    let dias = page.locator('.opcion-fecha');
     let diaco = await dias.count();
 
     let intentos = 0;
     while (diaco === 0 && intentos < 5) {
       await refrescarPagina(page);
+      dias = page.locator('.opcion-fecha');
       diaco = await dias.count();
       intentos++;
       console.log(`Intento ${intentos} - días encontrados: ${diaco}`);
     }
-    
+
     const este = await diahoy();
     let clickeardia: any;
     for (let j = 0; j < diaco; j++) {
