@@ -138,7 +138,7 @@ async function procesarHorarios(page: Page) {
     const texto = await fechatexto.innerText();
     // texto puede venir asi 04 o 05 o 06 como lo vuelvo a su entero osea 4, 5,6 
     const tex = parseInt(texto);
-    costo += 1;
+    costo++;
     if (tex === dia) {
       escogido = fechat;
       break;
@@ -172,6 +172,11 @@ async function procesarHorarios(page: Page) {
     }
     await page.goBack();
     await page.waitForTimeout(3000);
+    if (costo > 1) {
+      await page.goBack();
+      await page.waitForTimeout(5000);
+      console.log('Volviendo a la lista de películas por segunda ves');
+    }
     return pelicula;
 
   } else {
