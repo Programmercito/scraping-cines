@@ -101,9 +101,13 @@ async function cierraPopup(page, reload = false) {
     // recorro la lista
     const lista = listapelis.locator('.item-container');
     let coun = await lista.count();
-    while (coun === 0) {
+    let intentos = 0;
+    
+    while (coun === 0 && intentos < 5) {
       await refrescarPagina(page);
       coun = await lista.count();
+      intentos++;
+      console.log(`Intento ${intentos} - elementos encontrados: ${coun}`);
     }
   }
   // obetenemos el modal que tiene la clase modal-content
@@ -168,7 +172,7 @@ async function procesarPagina(page: Page, ciu: string) {
       pelicula.titulo = texto;
     }
     const dias = page.locator('.opcion-fecha');
-    const diaco = await dias.count();
+    let  diaco = await dias.count();
     console.log('Cantidad de dias: ' + diaco);
     const este = await diahoy();
     let clickeardia: any;
