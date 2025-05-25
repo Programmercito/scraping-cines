@@ -102,7 +102,7 @@ async function cierraPopup(page, reload = false) {
     const lista = listapelis.locator('.item-container');
     let coun = await lista.count();
     let intentos = 0;
-    
+
     while (coun === 0 && intentos < 5) {
       await refrescarPagina(page);
       coun = await lista.count();
@@ -172,8 +172,16 @@ async function procesarPagina(page: Page, ciu: string) {
       pelicula.titulo = texto;
     }
     const dias = page.locator('.opcion-fecha');
-    let  diaco = await dias.count();
-    console.log('Cantidad de dias: ' + diaco);
+    let diaco = await dias.count();
+
+    let intentos = 0;
+    while (diaco === 0 && intentos < 5) {
+      await refrescarPagina(page);
+      diaco = await dias.count();
+      intentos++;
+      console.log(`Intento ${intentos} - días encontrados: ${diaco}`);
+    }
+    
     const este = await diahoy();
     let clickeardia: any;
     for (let j = 0; j < diaco; j++) {
