@@ -54,13 +54,8 @@ test('megacenter', async ({ page }) => {
       console.log(texto2);
     }
     item.click();
-    await page.waitForTimeout(28000);
-    // refresco la pagina
-    await page.reload();
-    // espero 20 segundos
-    await page.waitForTimeout(20000);
-    
-    await cierraPopup(page);
+
+    await cierraPopup(page, true);
     // captura pantalla con el nombre de la ciudad
     await page.screenshot({ path: `/opt/osbo/screenshot-ciudad-${o}.png` });
     // Procesa las películas de esta ciudad y lo guargo en un array de strings
@@ -91,7 +86,20 @@ test('megacenter', async ({ page }) => {
   }
 });
 
-async function cierraPopup(page) {
+async function cierraPopup(page, reload = false) {
+  if (reload) {
+    const listapelis = page.locator('.items-container.multifila').first();
+    // recorro la lista
+    const lista = listapelis.locator('.item-container');
+    const coun = await lista.count();
+    if (coun === 0) {
+      await page.waitForTimeout(28000);
+      // refresco la pagina
+      await page.reload();
+      // espero 20 segundos
+      await page.waitForTimeout(20000);
+    }
+  }
   // obetenemos el modal que tiene la clase modal-content
   const boton = await page.$('.btn-cerrar');
   // verifico si esta visible
@@ -171,7 +179,7 @@ async function procesarPagina(page: Page, ciu: string) {
       console.log('No se encontró el día de hoy en la lista de días.');
       page.goBack();
       await page.waitForTimeout(6000);
-      await cierraPopup(page);
+      await cierraPopup(page, true);
       continue; // Salimos del bucle si no encontramos el día
     }
     clickeardia.click();
@@ -199,7 +207,7 @@ async function procesarPagina(page: Page, ciu: string) {
     ciudad.peliculas.push(pelicula);
     page.goBack();
     await page.waitForTimeout(4000);
-    await cierraPopup(page);
+    await cierraPopup(page, true);
 
   }
   const ciudadData = await ciudadString(ciudad);
