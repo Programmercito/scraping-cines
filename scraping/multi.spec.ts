@@ -144,9 +144,10 @@ async function procesarHorarios(page: Page) {
       break;
     }
   }
-
+  let url= page.url();
   // Verifica si existe la pestaña de fecha para mañana
   if (escogido) {
+
     escogido.click({ force: true });
     await page.waitForTimeout(20000);
 
@@ -172,7 +173,7 @@ async function procesarHorarios(page: Page) {
     }
     await page.goBack();
     await page.waitForTimeout(3000);
-    if (costo > 1) {
+    if (url!== page.url()) {
       await page.goBack();
       await page.waitForTimeout(5000);
       console.log('Volviendo a la lista de películas por segunda ves');
