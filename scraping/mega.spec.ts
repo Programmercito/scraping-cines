@@ -100,9 +100,10 @@ async function cierraPopup(page, reload = false) {
     const listapelis = page.locator('.items-container.multifila').first();
     // recorro la lista
     const lista = listapelis.locator('.item-container');
-    const coun = await lista.count();
-    if (coun === 0) {
+    let coun = await lista.count();
+    while (coun === 0) {
       await refrescarPagina(page);
+      coun = await lista.count();
     }
   }
   // obetenemos el modal que tiene la clase modal-content
