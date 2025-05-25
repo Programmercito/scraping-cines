@@ -25,7 +25,7 @@ test('megacenter', async ({ page }) => {
     await page.waitForTimeout(10000);
     // guardo una captura 
 
-    await cierraPopup(page);
+    await cierraPopup(page, true);
     // cargamos capturamos la pantalla
 
 
@@ -86,6 +86,15 @@ test('megacenter', async ({ page }) => {
   }
 });
 
+async function refrescarPagina(page: Page) {
+  // espero 20 segundos
+  await page.waitForTimeout(20000);
+  // refresco la pagina
+  await page.reload();
+  // espero 20 segundos
+  await page.waitForTimeout(20000);
+}
+
 async function cierraPopup(page, reload = false) {
   if (reload) {
     const listapelis = page.locator('.items-container.multifila').first();
@@ -93,11 +102,7 @@ async function cierraPopup(page, reload = false) {
     const lista = listapelis.locator('.item-container');
     const coun = await lista.count();
     if (coun === 0) {
-      await page.waitForTimeout(28000);
-      // refresco la pagina
-      await page.reload();
-      // espero 20 segundos
-      await page.waitForTimeout(20000);
+      await refrescarPagina(page);
     }
   }
   // obetenemos el modal que tiene la clase modal-content
