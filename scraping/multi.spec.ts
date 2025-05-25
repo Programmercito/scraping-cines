@@ -144,7 +144,7 @@ async function procesarHorarios(page: Page) {
       break;
     }
   }
-  let url= page.url();
+  let url = page.url();
   // Verifica si existe la pestaña de fecha para mañana
   if (escogido) {
 
@@ -171,13 +171,14 @@ async function procesarHorarios(page: Page) {
         console.log(`Horario: ${horarioTexto} ${idiomaTexto} ${formatotit}`);
       }
     }
-    await page.goBack();
-    await page.waitForTimeout(3000);
-    if (url!== page.url() && page.url() !== 'https://www.multicine.com.bo/') {
+    if (url !== page.url() && page.url() !== 'https://www.multicine.com.bo/') {
       await page.goBack();
       await page.waitForTimeout(5000);
-      console.log('Volviendo a la lista de películas por segunda ves');
+      console.log('Volviendo a la lista de películas extra');
     }
+    await page.goBack();
+    await page.waitForTimeout(3000);
+
     return pelicula;
 
   } else {
