@@ -91,12 +91,14 @@ async function refrescarPagina(page: Page) {
   await page.waitForTimeout(20000);
   // refresco la pagina
   await page.reload();
+  console.log('Refrescando la pagina'); 
   // espero 20 segundos
   await page.waitForTimeout(20000);
 }
 
 async function cierraPopup(page, reload = false) {
   if (reload) {
+    await page.waitForTimeout(20000);
     let listapelis = page.locator('.items-container.multifila').first();
     // recorro la lista
     let lista = listapelis.locator('.item-container');
