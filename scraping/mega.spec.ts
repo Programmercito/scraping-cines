@@ -41,7 +41,7 @@ test('megacenter', async ({ page }) => {
       element.dispatchEvent(event);
     });
     // espero 2 segundos
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(20000);
     // capturo pantalla de cada uno de los componentes
     const lista = page.locator('.e-ddl.e-control.e-lib.e-popup.background.e-popup-open');
     // recorro todos los elementos de la lista
