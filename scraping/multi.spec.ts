@@ -173,7 +173,7 @@ async function procesarHorarios(page: Page) {
     }
     await page.goBack();
     await page.waitForTimeout(3000);
-    if (url!== page.url()) {
+    if (url!== page.url() && page.url() !== 'https://www.multicine.com.bo/') {
       await page.goBack();
       await page.waitForTimeout(5000);
       console.log('Volviendo a la lista de películas por segunda ves');
