@@ -55,6 +55,11 @@ test('megacenter', async ({ page }) => {
     }
     item.click();
     await page.waitForTimeout(28000);
+    // refresco la pagina
+    await page.reload();
+    // espero 20 segundos
+    await page.waitForTimeout(20000);
+    
     await cierraPopup(page);
     // captura pantalla con el nombre de la ciudad
     await page.screenshot({ path: `/opt/osbo/screenshot-ciudad-${o}.png` });
