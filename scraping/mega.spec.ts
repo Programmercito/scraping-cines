@@ -25,7 +25,7 @@ test('megacenter', async ({ page }) => {
     await page.waitForTimeout(10000);
     // guardo una captura 
 
-    await cierraPopup(page);
+    await cierraPopup(page, true);
     // cargamos capturamos la pantalla
 
 
@@ -41,7 +41,7 @@ test('megacenter', async ({ page }) => {
       element.dispatchEvent(event);
     });
     // espero 2 segundos
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(20000);
     // capturo pantalla de cada uno de los componentes
     const lista = page.locator('.e-ddl.e-control.e-lib.e-popup.background.e-popup-open');
     // recorro todos los elementos de la lista
@@ -54,10 +54,10 @@ test('megacenter', async ({ page }) => {
       console.log(texto2);
     }
     item.click();
-    await page.waitForTimeout(8000);
-    await cierraPopup(page);
+
+    await cierraPopup(page, true);
     // captura pantalla con el nombre de la ciudad
-    await page.screenshot({ path: `/opt/db/screenshot-ciudad-${o}.png` });
+    await page.screenshot({ path: `/opt/osbo/screenshot-ciudad-${o}.png` });
     // Procesa las películas de esta ciudad y lo guargo en un array de strings
     const ciudad = await procesarPagina(page, texto2);
     // lo guargo en un array
@@ -86,7 +86,34 @@ test('megacenter', async ({ page }) => {
   }
 });
 
-async function cierraPopup(page) {
+async function refrescarPagina(page: Page) {
+  // espero 20 segundos
+  await page.waitForTimeout(20000);
+  // refresco la pagina
+  await page.reload();
+  console.log('Refrescando la pagina'); 
+  // espero 20 segundos
+  await page.waitForTimeout(20000);
+}
+
+async function cierraPopup(page, reload = false) {
+  if (reload) {
+    await page.waitForTimeout(20000);
+    let listapelis = page.locator('.items-container.multifila').first();
+    // recorro la lista
+    let lista = listapelis.locator('.item-container');
+    let coun = await lista.count();
+    let intentos = 0;
+
+    while (coun === 0 && intentos < 5) {
+      await refrescarPagina(page);
+      listapelis = page.locator('.items-container.multifila').first();
+      lista = listapelis.locator('.item-container');
+      coun = await lista.count();
+      intentos++;
+      console.log(`Intento ${intentos} - elementos encontrados: ${coun}`);
+    }
+  }
   // obetenemos el modal que tiene la clase modal-content
   const boton = await page.$('.btn-cerrar');
   // verifico si esta visible
@@ -148,9 +175,18 @@ async function procesarPagina(page: Page, ciu: string) {
       console.log(texto);
       pelicula.titulo = texto;
     }
-    const dias = page.locator('.opcion-fecha');
-    const diaco = await dias.count();
-    console.log('Cantidad de dias: ' + diaco);
+    let dias = page.locator('.opcion-fecha');
+    let diaco = await dias.count();
+
+    let intentos = 0;
+    while (diaco === 0 && intentos < 5) {
+      await refrescarPagina(page);
+      dias = page.locator('.opcion-fecha');
+      diaco = await dias.count();
+      intentos++;
+      console.log(`Intento ${intentos} - días encontrados: ${diaco}`);
+    }
+
     const este = await diahoy();
     let clickeardia: any;
     for (let j = 0; j < diaco; j++) {
@@ -166,7 +202,7 @@ async function procesarPagina(page: Page, ciu: string) {
       console.log('No se encontró el día de hoy en la lista de días.');
       page.goBack();
       await page.waitForTimeout(6000);
-      await cierraPopup(page);
+      await cierraPopup(page, true);
       continue; // Salimos del bucle si no encontramos el día
     }
     clickeardia.click();
@@ -194,7 +230,7 @@ async function procesarPagina(page: Page, ciu: string) {
     ciudad.peliculas.push(pelicula);
     page.goBack();
     await page.waitForTimeout(4000);
-    await cierraPopup(page);
+    await cierraPopup(page, true);
 
   }
   const ciudadData = await ciudadString(ciudad);
