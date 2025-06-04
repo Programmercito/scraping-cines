@@ -138,15 +138,16 @@ async function procesarHorarios(page: Page) {
     const texto = await fechatexto.innerText();
     // texto puede venir asi 04 o 05 o 06 como lo vuelvo a su entero osea 4, 5,6 
     const tex = parseInt(texto);
-    costo += 1;
+    costo++;
     if (tex === dia) {
       escogido = fechat;
       break;
     }
   }
-
+  let url = page.url();
   // Verifica si existe la pestaña de fecha para mañana
   if (escogido) {
+
     escogido.click({ force: true });
     await page.waitForTimeout(20000);
 
@@ -170,8 +171,14 @@ async function procesarHorarios(page: Page) {
         console.log(`Horario: ${horarioTexto} ${idiomaTexto} ${formatotit}`);
       }
     }
+    if (url !== page.url() && page.url() !== 'https://www.multicine.com.bo/') {
+      await page.goBack();
+      await page.waitForTimeout(5000);
+      console.log('Volviendo a la lista de películas extra');
+    } 
     await page.goBack();
     await page.waitForTimeout(3000);
+
     return pelicula;
 
   } else {
