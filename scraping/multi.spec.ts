@@ -83,7 +83,7 @@ async function procesarPagina(page: Page) {
     for (let i = 0; i < count; i++) {
       const item = listabotones.nth(i);
       await item.click();
-      await page.waitForTimeout(20000); // espera a que cargue la información de la película
+      await page.waitForTimeout(25000); // espera a que cargue la información de la película
 
       // Guarda captura de la pantalla de detalles de la película
       //await page.screenshot({ path: `screenshot-pelicula-${i}.png` });
