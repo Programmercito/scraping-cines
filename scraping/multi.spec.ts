@@ -111,7 +111,13 @@ interface Ciudad {
 
 interface Pelicula {
   titulo: string;
-  horarios: string[];
+  horarios: Horario[];
+}
+
+interface Horario {
+  horario: string;
+  idioma: string;
+  formato: string;
 }
 
 async function procesarHorarios(page: Page) {
@@ -167,7 +173,13 @@ async function procesarHorarios(page: Page) {
         // obtengo el hoario
         const horario = horarios.nth(j).locator('.showtime');
         const horarioTexto = await horario.innerText();
-        pelicula.horarios.push(`${horarioTexto} ${idiomaTexto} ${formatotit}`);
+        // creao un Horario vacio
+        const horarioObj: Horario = {
+          horario: horarioTexto,
+          idioma: idiomaTexto,
+          formato: formatotit
+        };
+        pelicula.horarios.push(horarioObj);
         console.log(`Horario: ${horarioTexto} ${idiomaTexto} ${formatotit}`);
       }
     }
@@ -230,7 +242,7 @@ async function ciudadString(ciudad: Ciudad): Promise<string> {
   for (const pelicula of ciudad.peliculas) {
     ciudadString += `<b>${pelicula.titulo}</b>\n`;
     for (const horario of pelicula.horarios) {
-      ciudadString += `${horario}\n`;
+      ciudadString += `${horario.horario} - ${horario.idioma} - ${horario.formato}\n`;
     }
     ciudadString += '\n';
   }
