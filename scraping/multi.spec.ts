@@ -104,21 +104,7 @@ async function procesarPagina(page: Page) {
   return total;
 }
 
-interface Ciudad {
-  peliculas: Pelicula[];
-  ciudad: string;
-}
 
-interface Pelicula {
-  titulo: string;
-  horarios: Horario[];
-}
-
-interface Horario {
-  horario: string;
-  idioma: string;
-  formato: string;
-}
 
 async function procesarHorarios(page: Page) {
   // Obtiene el título de la película
