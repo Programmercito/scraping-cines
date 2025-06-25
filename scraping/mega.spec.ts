@@ -91,7 +91,7 @@ async function refrescarPagina(page: Page) {
   await page.waitForTimeout(20000);
   // refresco la pagina
   await page.reload();
-  console.log('Refrescando la pagina'); 
+  console.log('Refrescando la pagina');
   // espero 20 segundos
   await page.waitForTimeout(20000);
 }
@@ -126,16 +126,6 @@ async function cierraPopup(page, reload = false) {
     await page.waitForTimeout(5000);
 
   }
-}
-
-interface Ciudad {
-  peliculas: Pelicula[];
-  ciudad: string;
-}
-
-interface Pelicula {
-  titulo: string;
-  horarios: string[];
 }
 
 
@@ -223,7 +213,18 @@ async function procesarPagina(page: Page, ciu: string) {
         // split de - y agarro el primero
         const hor = texto?.split('-')[0].trim();
         console.log(hor + ' ' + fortext);
-        pelicula.horarios.push(hor + ' ' + fortext);
+        let listadatos=fortext?.split(' ');
+        // obtengo el idioma que es el el ultimo elemento de lista
+        const idioma = listadatos ? listadatos[listadatos.length - 1] : '';
+        // obtengo el formato que es todo el array menos el ultimo elemento
+        const formato = listadatos ? listadatos.slice(0, -1).join(' ') : '';
+        const horarioObj: Horario = {
+          horario: hor || '',
+          idioma: idioma || '',
+          formato: formato || ''
+        };
+
+        pelicula.horarios.push(horarioObj);
 
       }
     }
@@ -242,7 +243,7 @@ async function ciudadString(ciudad: Ciudad): Promise<string> {
   for (const pelicula of ciudad.peliculas) {
     ciudadString += `<b>${pelicula.titulo}</b>\n`;
     for (const horario of pelicula.horarios) {
-      ciudadString += `${horario}\n`;
+      ciudadString += `${horario.horario} - ${horario.idioma} - ${horario.formato}\n`;
     }
     ciudadString += '\n';
   }
