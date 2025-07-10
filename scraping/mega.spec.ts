@@ -2,7 +2,7 @@ import { test, expect, Page } from '@playwright/test';
 import dotenv from 'dotenv';
 import { parse } from 'path';
 import TeleBot from "telebot";
-import { JsonFileWriter, Ciudad, Pelicula} from './common';
+import { JsonFileWriter, Ciudad, Pelicula, Horario } from './common';
 
 test('megacenter', async ({ page }) => {
 
@@ -70,10 +70,16 @@ test('megacenter', async ({ page }) => {
   } while (o < count);
   // obtengo ruta de guardado
   const savePath = JsonFileWriter.getSavePath();
-  // guardo el array de ciudades en un archivo json
-  JsonFileWriter.saveToJson(ciudadArray, `${savePath}/megacenter.json`);
+  // creao un objeto cine con las ciudades y la fecha
+  const cineData = {
+    ciudades: ciudadArray,
+    cine: cine,
+    fecha: await diahoycompleto()
+  };
+  JsonFileWriter.saveToJson(cineData, `${savePath}/1.json`);
 
-  
+
+
   // envio 
   for (const ciudad of ciudadArray) {
     if (telegram === 'true') {
@@ -219,7 +225,7 @@ async function procesarPagina(page: Page, ciu: string) {
         // split de - y agarro el primero
         const hor = texto?.split('-')[0].trim();
         console.log(hor + ' ' + fortext);
-        let listadatos=fortext?.split(' ');
+        let listadatos = fortext?.split(' ');
         // obtengo el idioma que es el el ultimo elemento de lista
         const idioma = listadatos ? listadatos[listadatos.length - 1] : '';
         // obtengo el formato que es todo el array menos el ultimo elemento

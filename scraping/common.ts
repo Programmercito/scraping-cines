@@ -1,7 +1,7 @@
 import { writeFileSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 
-interface Cine{
+export interface Cine{
   ciudades: Ciudad[];
   cine: string;
   fecha: string;
@@ -13,12 +13,12 @@ export interface Ciudad {
 }
 
 
-interface Pelicula {
+export interface Pelicula {
   titulo: string;
   horarios: Horario[];
 }
 
-interface Horario {
+export interface Horario {
   horario: string;
   idioma: string;
   formato: string;

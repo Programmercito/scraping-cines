@@ -2,6 +2,8 @@ import { test, expect, Page } from '@playwright/test';
 import dotenv from 'dotenv';
 import { parse } from 'path';
 import TeleBot from "telebot";
+import { JsonFileWriter, Ciudad, Pelicula, Horario } from './common';
+
 
 test('multicine', async ({ page }) => {
 
@@ -52,6 +54,15 @@ test('multicine', async ({ page }) => {
     await header.click();
   }
 
+  // obtengo ruta de guardado
+  const savePath = JsonFileWriter.getSavePath();
+  // creao un objeto cine con las ciudades y la fecha
+  const cineData = {
+    ciudades: ciudadArray,
+    cine: cine,
+    fecha: await diahoycompleto()
+  };
+  JsonFileWriter.saveToJson(cineData, `${savePath}/2.json`);
 
   for (const ciudad of ciudadArray) {
     if (telegram === 'true') {
@@ -173,7 +184,7 @@ async function procesarHorarios(page: Page) {
       await page.goBack();
       await page.waitForTimeout(5000);
       console.log('Volviendo a la lista de películas extra');
-    } 
+    }
     await page.goBack();
     await page.waitForTimeout(3000);
 
