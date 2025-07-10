@@ -79,24 +79,26 @@ test('megacenter', async ({ page }) => {
   JsonFileWriter.saveToJson(cineData, `${savePath}/1.json`);
 
 
+  if (process.env.DISABLE_TELEGRAM !== 'TRUE') {
+    // envio 
+    for (const ciudad of ciudadArray) {
+      if (telegram === 'true') {
 
-  // envio 
-  for (const ciudad of ciudadArray) {
-    if (telegram === 'true') {
+        await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diahoycompleto()) + "\n" + (await ciudad) + "\n" + cine + "\n" + (await diahoycompleto()), {
+          notification: false,
+          parseMode: 'html'
+        })
+          .then(() => console.log('Mensaje enviado'))
+          .catch((error) => console.error('Error al enviar el mensaje:', error));
+        await page.waitForTimeout(1000);
 
-      await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diahoycompleto()) + "\n" + (await ciudad) + "\n" + cine + "\n" + (await diahoycompleto()), {
-        notification: false,
-        parseMode: 'html'
-      })
-        .then(() => console.log('Mensaje enviado'))
-        .catch((error) => console.error('Error al enviar el mensaje:', error));
-      await page.waitForTimeout(1000);
+      }
+      console.log(ciudad);
 
     }
-    console.log(ciudad);
-
   }
 });
+
 
 async function refrescarPagina(page: Page) {
   // espero 20 segundos
