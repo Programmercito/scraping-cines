@@ -2,6 +2,7 @@ import { test, expect, Page } from '@playwright/test';
 import dotenv from 'dotenv';
 import { parse } from 'path';
 import TeleBot from "telebot";
+import { JsonFileWriter, Ciudad, Pelicula} from './common';
 
 test('megacenter', async ({ page }) => {
 
@@ -67,7 +68,12 @@ test('megacenter', async ({ page }) => {
     o++;
 
   } while (o < count);
+  // obtengo ruta de guardado
+  const savePath = JsonFileWriter.getSavePath();
+  // guardo el array de ciudades en un archivo json
+  JsonFileWriter.saveToJson(ciudadArray, `${savePath}/megacenter.json`);
 
+  
   // envio 
   for (const ciudad of ciudadArray) {
     if (telegram === 'true') {
