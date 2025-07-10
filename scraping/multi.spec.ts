@@ -2,6 +2,8 @@ import { test, expect, Page } from '@playwright/test';
 import dotenv from 'dotenv';
 import { parse } from 'path';
 import TeleBot from "telebot";
+import { JsonFileWriter, Ciudad, Pelicula, Horario, SystemCommandExecutor } from './common';
+
 
 test('multicine', async ({ page }) => {
 
@@ -52,18 +54,32 @@ test('multicine', async ({ page }) => {
     await header.click();
   }
 
+  // obtengo ruta de guardado
+  const savePath = JsonFileWriter.getSavePath() + JsonFileWriter.getDosPath();
+  // creao un objeto cine con las ciudades y la fecha
+  const cineData = {
+    ciudades: ciudadArray,
+    cine: cine,
+    fecha: await diahoycompleto()
+  };
+  JsonFileWriter.saveToJson(cineData, `${savePath}/2.json`);
+  SystemCommandExecutor.gitCommitAndPush("Agregando horarios de cine", JsonFileWriter.getSavePath());
 
-  for (const ciudad of ciudadArray) {
-    if (telegram === 'true') {
-      await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diahoycompleto()) + "\n" + (await ciudad) + "\n" + cine + "\n" + (await diahoycompleto()), {
-        notification: false,
-        parseMode: 'html'
-      })
-        .then(() => console.log('Mensaje enviado'))
-        .catch((error) => console.error('Error al enviar el mensaje:', error));
-      await page.waitForTimeout(1000);
+  
+  if (process.env.DISABLE_TELEGRAM !== 'TRUE') {
+
+    for (const ciudad of ciudadArray) {
+      if (telegram === 'true') {
+        await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diahoycompleto()) + "\n" + (await ciudad) + "\n" + cine + "\n" + (await diahoycompleto()), {
+          notification: false,
+          parseMode: 'html'
+        })
+          .then(() => console.log('Mensaje enviado'))
+          .catch((error) => console.error('Error al enviar el mensaje:', error));
+        await page.waitForTimeout(1000);
+      }
+      console.log(ciudad);
     }
-    console.log(ciudad);
   }
 });
 
@@ -104,15 +120,7 @@ async function procesarPagina(page: Page) {
   return total;
 }
 
-interface Ciudad {
-  peliculas: Pelicula[];
-  ciudad: string;
-}
 
-interface Pelicula {
-  titulo: string;
-  horarios: string[];
-}
 
 async function procesarHorarios(page: Page) {
   // Obtiene el título de la película
@@ -167,7 +175,13 @@ async function procesarHorarios(page: Page) {
         // obtengo el hoario
         const horario = horarios.nth(j).locator('.showtime');
         const horarioTexto = await horario.innerText();
-        pelicula.horarios.push(`${horarioTexto} ${idiomaTexto} ${formatotit}`);
+        // creao un Horario vacio
+        const horarioObj: Horario = {
+          horario: horarioTexto,
+          idioma: idiomaTexto,
+          formato: formatotit
+        };
+        pelicula.horarios.push(horarioObj);
         console.log(`Horario: ${horarioTexto} ${idiomaTexto} ${formatotit}`);
       }
     }
@@ -175,7 +189,7 @@ async function procesarHorarios(page: Page) {
       await page.goBack();
       await page.waitForTimeout(5000);
       console.log('Volviendo a la lista de películas extra');
-    } 
+    }
     await page.goBack();
     await page.waitForTimeout(3000);
 
@@ -230,7 +244,7 @@ async function ciudadString(ciudad: Ciudad): Promise<string> {
   for (const pelicula of ciudad.peliculas) {
     ciudadString += `<b>${pelicula.titulo}</b>\n`;
     for (const horario of pelicula.horarios) {
-      ciudadString += `${horario}\n`;
+      ciudadString += `${horario.horario} - ${horario.idioma} - ${horario.formato}\n`;
     }
     ciudadString += '\n';
   }
