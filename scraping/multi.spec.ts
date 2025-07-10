@@ -63,18 +63,21 @@ test('multicine', async ({ page }) => {
     fecha: await diahoycompleto()
   };
   JsonFileWriter.saveToJson(cineData, `${savePath}/2.json`);
+  
+  if (process.env.DISABLE_TELEGRAM !== 'TRUE') {
 
-  for (const ciudad of ciudadArray) {
-    if (telegram === 'true') {
-      await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diahoycompleto()) + "\n" + (await ciudad) + "\n" + cine + "\n" + (await diahoycompleto()), {
-        notification: false,
-        parseMode: 'html'
-      })
-        .then(() => console.log('Mensaje enviado'))
-        .catch((error) => console.error('Error al enviar el mensaje:', error));
-      await page.waitForTimeout(1000);
+    for (const ciudad of ciudadArray) {
+      if (telegram === 'true') {
+        await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diahoycompleto()) + "\n" + (await ciudad) + "\n" + cine + "\n" + (await diahoycompleto()), {
+          notification: false,
+          parseMode: 'html'
+        })
+          .then(() => console.log('Mensaje enviado'))
+          .catch((error) => console.error('Error al enviar el mensaje:', error));
+        await page.waitForTimeout(1000);
+      }
+      console.log(ciudad);
     }
-    console.log(ciudad);
   }
 });
 
