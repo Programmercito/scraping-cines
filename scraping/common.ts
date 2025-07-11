@@ -75,7 +75,7 @@ export class SystemCommandExecutor {
     } catch (error) {
       throw new Error(`Error during git push: ${error}`);
     }
-  }
+  } 
 
   public static gitCommitAndPush(message: string, workingDirectory?: string, remote: string = 'origin', branch: string = 'main'): void {
     try {
