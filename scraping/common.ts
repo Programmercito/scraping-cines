@@ -83,6 +83,6 @@ export class SystemCommandExecutor {
       this.gitPush(remote, branch, workingDirectory);
     } catch (error) {
       throw new Error(`Error during git commit and push: ${error}`);
-    }
+    } 
   }
 }
