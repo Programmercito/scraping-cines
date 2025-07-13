@@ -1,4 +1,4 @@
-import { writeFileSync, mkdirSync } from 'fs';
+import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'fs';
 import { dirname } from 'path';
 import { execSync } from 'child_process';
 
@@ -49,6 +49,27 @@ export class JsonFileWriter {
   }
   public static getDosPath(): string {
     return '/docs';
+  }
+  public static loadFromFile(filePath: string): any {
+    try {
+      // Check if file exists
+      if (!existsSync(filePath)) {
+        throw new Error(`File not found: ${filePath}`);
+      }
+
+      // Read file content
+      const fileContent = readFileSync(filePath, 'utf-8');
+      
+      // Parse JSON content
+      const jsonObject = JSON.parse(fileContent);
+      
+      return jsonObject;
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        throw new Error(`Invalid JSON format in file ${filePath}: ${error.message}`);
+      }
+      throw new Error(`Error loading JSON from ${filePath}: ${error}`);
+    }
   }
 }
 
