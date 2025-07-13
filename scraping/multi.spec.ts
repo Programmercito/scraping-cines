@@ -126,7 +126,7 @@ async function procesarPagina(page: Page) {
 async function procesarHorarios(page: Page) {
   // Obtiene el título de la película
   const titulo = await page.locator('.text-size-xlarge.text-weight-semibold.text-color-white').first();
-  let pelicula: Pelicula = { titulo: '', horarios: [] };
+  let pelicula: Pelicula = { titulo: '', horarios: [] , id: '' };
   pelicula.titulo = await titulo.innerText();
   console.log(`Título de película: ${pelicula.titulo}`);
   // si pelicula.titulo tiene valor continuo

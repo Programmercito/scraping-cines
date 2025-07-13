@@ -13,8 +13,13 @@ export interface Ciudad {
   ciudad: string;
 }
 
-
+export interface PeliculaData {
+  id: string;
+  titulo: string;
+  Video: string;
+}
 export interface Pelicula {
+  id: string;
   titulo: string;
   horarios: Horario[];
 }
