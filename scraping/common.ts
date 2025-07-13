@@ -61,7 +61,7 @@ export class SystemCommandExecutor {
   public static gitCommit(message: string, workingDirectory?: string): string {
     try {
       // Commit with message (files are already tracked)
-      const commitCommand = `git commit -m "${message}"`;
+      const commitCommand = `git commit -am "${message}"`;
       return this.executeCommand(commitCommand, workingDirectory);
     } catch (error) {
       throw new Error(`Error during git commit: ${error}`);
