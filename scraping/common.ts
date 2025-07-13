@@ -70,7 +70,7 @@ export class SystemCommandExecutor {
 
   public static gitPush(remote: string = 'origin', branch: string = 'main', workingDirectory?: string): string {
     try {
-      const pushCommand = `git push ${remote} ${branch}`;
+      const pushCommand = `git push ${remote} ${branch} --force`;
       return this.executeCommand(pushCommand, workingDirectory);
     } catch (error) {
       throw new Error(`Error during git push: ${error}`);
