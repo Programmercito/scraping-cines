@@ -173,7 +173,8 @@ async function procesarPagina(page: Page, ciu: string) {
     item.click();
     // espero 4 segundos
     await page.waitForTimeout(4000);
-    let pelicula: Pelicula = { titulo: '', horarios: [] };
+    let pelicula: Pelicula = { titulo: '', horarios: [], id: '' };
+    
     const pe = page.locator('.nombre-pelicula');
     //leo el contenido
     const texto = await pe.evaluate((element) => element.innerHTML);
