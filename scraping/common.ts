@@ -68,6 +68,15 @@ export class SystemCommandExecutor {
     }
   }
 
+  public static gitPull(remote: string = 'origin', branch: string = 'main', workingDirectory?: string): string {
+    try {
+      const pullCommand = `git pull ${remote} ${branch}`;
+      return this.executeCommand(pullCommand, workingDirectory);
+    } catch (error) {
+      throw new Error(`Error during git pull: ${error}`);
+    }
+  }
+
   public static gitPush(remote: string = 'origin', branch: string = 'main', workingDirectory?: string): string {
     try {
       const pushCommand = `git push ${remote} ${branch} --force`;
@@ -75,7 +84,7 @@ export class SystemCommandExecutor {
     } catch (error) {
       throw new Error(`Error during git push: ${error}`);
     }
-  } 
+  }
 
   public static gitCommitAndPush(message: string, workingDirectory?: string, remote: string = 'origin', branch: string = 'main'): void {
     try {
@@ -83,6 +92,6 @@ export class SystemCommandExecutor {
       this.gitPush(remote, branch, workingDirectory);
     } catch (error) {
       throw new Error(`Error during git commit and push: ${error}`);
-    } 
+    }
   }
 }
