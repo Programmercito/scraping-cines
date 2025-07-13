@@ -62,6 +62,7 @@ test('multicine', async ({ page }) => {
     cine: cine,
     fecha: await diahoycompleto()
   };
+  SystemCommandExecutor.gitPull(savePath);
   JsonFileWriter.saveToJson(cineData, `${savePath}/2.json`);
   SystemCommandExecutor.gitCommitAndPush("Agregando horarios de cine", JsonFileWriter.getSavePath());
 

@@ -76,6 +76,7 @@ test('megacenter', async ({ page }) => {
     cine: cine,
     fecha: await diahoycompleto()
   };
+  SystemCommandExecutor.gitPull(savePath);
   JsonFileWriter.saveToJson(cineData, `${savePath}/1.json`);
   SystemCommandExecutor.gitCommitAndPush("Agregando horarios de cine", JsonFileWriter.getSavePath());
 
