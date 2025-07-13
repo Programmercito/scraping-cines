@@ -62,11 +62,13 @@ test('multicine', async ({ page }) => {
     cine: cine,
     fecha: await diahoycompleto()
   };
+  
   SystemCommandExecutor.gitPull(savePath);
   //recorro las peliculas a enviar en cineData
   cineData.ciudades.forEach(ciudad => {
-    ciudad.peliculas.forEach(pelicula => {
-      const idpeli=await ProcessMovie.processsMovie(pelicula.titulo);
+    ciudad.peliculas.forEach(async pelicula => {
+      const idpeli = await ProcessMovie.processsMovie(pelicula.titulo);
+      pelicula.id = idpeli;
     });
   });
   JsonFile.saveToJson(cineData, `${savePath}/2.json`);
@@ -76,8 +78,9 @@ test('multicine', async ({ page }) => {
   if (process.env.DISABLE_TELEGRAM !== 'TRUE') {
 
     for (const ciudad of ciudadArray) {
+      const ciudadStr = await ciudadString(ciudad);
       if (telegram === 'true') {
-        await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diahoycompleto()) + "\n" + (await ciudad) + "\n" + cine + "\n" + (await diahoycompleto()), {
+        await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diahoycompleto()) + "\n" + (await ciudadStr) + "\n" + cine + "\n" + (await diahoycompleto()), {
           notification: false,
           parseMode: 'html'
         })
@@ -85,7 +88,7 @@ test('multicine', async ({ page }) => {
           .catch((error) => console.error('Error al enviar el mensaje:', error));
         await page.waitForTimeout(1000);
       }
-      console.log(ciudad);
+      console.log(ciudadStr);
     }
   }
 });
