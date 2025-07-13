@@ -2,7 +2,7 @@ import { test, expect, Page } from '@playwright/test';
 import dotenv from 'dotenv';
 import { parse } from 'path';
 import TeleBot from "telebot";
-import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor } from './common';
+import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor, ProcessMovie } from './common';
 
 
 test('multicine', async ({ page }) => {
@@ -20,7 +20,7 @@ test('multicine', async ({ page }) => {
   const dropdownItems = items.locator('.dropdownItem');
   const count = await dropdownItems.count();
   console.log(`Total de elementos encontrados en ciudades: ${count - 1}`);
-  const ciudadArray: string[] = [];
+  const ciudadArray: Ciudad[] = [];
   dotenv.config();
   const token = process.env.TOKEN;
   const chatId = process.env.CHATID;
@@ -43,7 +43,7 @@ test('multicine', async ({ page }) => {
     //await page.screenshot({ path: `screenshot-ciudad-${i}.png` });
 
     // Procesa las películas de esta ciudad y lo guargo en un array de strings
-    const ciudad = await procesarPagina(page);
+    const ciudad: Ciudad = await procesarPagina(page);
     // lo guargo en un array
     ciudadArray.push(ciudad);
 
@@ -63,10 +63,16 @@ test('multicine', async ({ page }) => {
     fecha: await diahoycompleto()
   };
   SystemCommandExecutor.gitPull(savePath);
+  //recorro las peliculas a enviar en cineData
+  cineData.ciudades.forEach(ciudad => {
+    ciudad.peliculas.forEach(pelicula => {
+      const idpeli=await ProcessMovie.processsMovie(pelicula.titulo);
+    });
+  });
   JsonFile.saveToJson(cineData, `${savePath}/2.json`);
   SystemCommandExecutor.gitCommitAndPush("Agregando horarios de cine", JsonFile.getSavePath());
 
-  
+
   if (process.env.DISABLE_TELEGRAM !== 'TRUE') {
 
     for (const ciudad of ciudadArray) {
@@ -106,7 +112,7 @@ async function procesarPagina(page: Page) {
       //await page.screenshot({ path: `screenshot-pelicula-${i}.png` });
 
       // Procesa los horarios de la película actual
-      let pelicula = await procesarHorarios(page);
+      let pelicula: Pelicula | null = await procesarHorarios(page);
       //await page.goBack(); // vuelve a la lista de películas
       //await page.waitForTimeout(15500); // espera a que cargue la lista de películas
       //await page.screenshot({ path: `screenshot-peliculaxx-${i}.png` });
@@ -116,17 +122,15 @@ async function procesarPagina(page: Page) {
       }
     }
   }
-  const total = await ciudadString(ciudad);
-  console.log(total);
-  return total;
+  return ciudad;
 }
 
 
 
-async function procesarHorarios(page: Page) {
+async function procesarHorarios(page: Page): Promise<Pelicula | null> {
   // Obtiene el título de la película
   const titulo = await page.locator('.text-size-xlarge.text-weight-semibold.text-color-white').first();
-  let pelicula: Pelicula = { titulo: '', horarios: [] , id: '' };
+  let pelicula: Pelicula = { titulo: '', horarios: [], id: '' };
   pelicula.titulo = await titulo.innerText();
   console.log(`Título de película: ${pelicula.titulo}`);
   // si pelicula.titulo tiene valor continuo

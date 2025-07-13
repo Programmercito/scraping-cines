@@ -111,7 +111,7 @@ export class YouTubeApiClient {
     try {
       const apiKey = process.env.YOUTUBE_KEY;
       if (!apiKey) {
-        throw new Error('YouTube API key not found in environment variables (YOUTUBE_KEY)');
+        throw new Error('YouTube API key not found in environment variables ()');
       }
 
       // Construir la query de búsqueda
