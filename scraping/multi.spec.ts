@@ -1,8 +1,7 @@
 import { test, expect, Page } from '@playwright/test';
 import dotenv from 'dotenv';
 import { parse } from 'path';
-import TeleBot from "telebot";
-import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor, ProcessMovie, CineDataProcessor } from './common';
+import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor, ProcessMovie, CineDataProcessor, TelegramPublisher } from './common';
 
 
 test('multicine', async ({ page }) => {
@@ -27,10 +26,8 @@ test('multicine', async ({ page }) => {
   const cine = process.env.CINE;
   const telegram = process.env.TELEGRAM;
 
-  const bot = new TeleBot({
-    token: token,
-  });
-  //await bot.start();
+  // Crear instancia de TelegramPublisher
+  const telegramPublisher = new TelegramPublisher(token || '', chatId || '', telegram || '');
 
 
   // Recorre las ciudades (excepto la primera que es el mensaje de selección)
@@ -65,23 +62,8 @@ test('multicine', async ({ page }) => {
   // Procesar y guardar datos del cine
   await CineDataProcessor.processCineData(cineData, "2.json");
 
-
-  if (process.env.DISABLE_TELEGRAM !== 'TRUE') {
-
-    for (const ciudad of ciudadArray) {
-      const ciudadStr = await ciudadString(ciudad);
-      if (telegram === 'true') {
-        await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diahoycompleto()) + "\n" + (await ciudadStr) + "\n" + cine + "\n" + (await diahoycompleto()), {
-          notification: false,
-          parseMode: 'html'
-        })
-          .then(() => console.log('Mensaje enviado'))
-          .catch((error) => console.error('Error al enviar el mensaje:', error));
-        await page.waitForTimeout(1000);
-      }
-      console.log(ciudadStr);
-    }
-  }
+  // Publicar en Telegram
+  await telegramPublisher.publicar(cineData, cine || '', await diahoycompleto());
 });
 
 async function procesarPagina(page: Page) {
