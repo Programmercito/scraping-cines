@@ -2,13 +2,13 @@ import { test, expect, Page } from '@playwright/test';
 import dotenv from 'dotenv';
 import { parse } from 'path';
 import TeleBot from "telebot";
-import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor } from './common';
+import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor, ProcessMovie } from './common';
 
 test('megacenter', async ({ page }) => {
 
   let o = 0;
   let count = 0;
-  const ciudadArray: string[] = [];
+  const ciudadArray: Ciudad[] = [];
   dotenv.config();
 
   const token = process.env.TOKEN;
@@ -59,8 +59,8 @@ test('megacenter', async ({ page }) => {
     await cierraPopup(page, true);
     // captura pantalla con el nombre de la ciudad
     await page.screenshot({ path: `/opt/osbo/screenshot-ciudad-${o}.png` });
-    // Procesa las películas de esta ciudad y lo guargo en un array de strings
-    const ciudad = await procesarPagina(page, texto2);
+    // Procesa las películas de esta ciudad y lo guargo en un array de Ciudad
+    const ciudad: Ciudad = await procesarPagina(page, texto2);
     // lo guargo en un array
     ciudadArray.push(ciudad);
 
@@ -76,27 +76,33 @@ test('megacenter', async ({ page }) => {
     cine: cine,
     fecha: await diahoycompleto()
   };
+  
   SystemCommandExecutor.gitPull(savePath);
+  //recorro las peliculas a enviar en cineData
+  cineData.ciudades.forEach(ciudad => {
+    ciudad.peliculas.forEach(async pelicula => {
+      const idpeli = await ProcessMovie.processsMovie(pelicula.titulo);
+      pelicula.id = idpeli;
+    });
+  });
   JsonFile.saveToJson(cineData, `${savePath}/1.json`);
   SystemCommandExecutor.gitCommitAndPush("Agregando horarios de cine", JsonFile.getSavePath());
 
 
   if (process.env.DISABLE_TELEGRAM !== 'TRUE') {
-    // envio 
-    for (const ciudad of ciudadArray) {
-      if (telegram === 'true') {
 
-        await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diahoycompleto()) + "\n" + (await ciudad) + "\n" + cine + "\n" + (await diahoycompleto()), {
+    for (const ciudad of ciudadArray) {
+      const ciudadStr = await ciudadString(ciudad);
+      if (telegram === 'true') {
+        await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diahoycompleto()) + "\n" + (await ciudadStr) + "\n" + cine + "\n" + (await diahoycompleto()), {
           notification: false,
           parseMode: 'html'
         })
           .then(() => console.log('Mensaje enviado'))
           .catch((error) => console.error('Error al enviar el mensaje:', error));
         await page.waitForTimeout(1000);
-
       }
-      console.log(ciudad);
-
+      console.log(ciudadStr);
     }
   }
 });
@@ -160,7 +166,7 @@ async function diahoycompleto() {
   const anio = hoy.getFullYear();
   return `${dia}/${mes}/${anio}`;
 }
-async function procesarPagina(page: Page, ciu: string) {
+async function procesarPagina(page: Page, ciu: string): Promise<Ciudad> {
   const listapelis = page.locator('.items-container.multifila').first();
   // recorro la lista
   const lista = listapelis.locator('.item-container');
@@ -251,8 +257,7 @@ async function procesarPagina(page: Page, ciu: string) {
     await cierraPopup(page, true);
 
   }
-  const ciudadData = await ciudadString(ciudad);
-  return ciudadData;
+  return ciudad;
 }
 
 async function ciudadString(ciudad: Ciudad): Promise<string> {
