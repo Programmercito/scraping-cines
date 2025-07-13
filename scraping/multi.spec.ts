@@ -2,7 +2,7 @@ import { test, expect, Page } from '@playwright/test';
 import dotenv from 'dotenv';
 import { parse } from 'path';
 import TeleBot from "telebot";
-import { JsonFileWriter, Ciudad, Pelicula, Horario, SystemCommandExecutor } from './common';
+import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor } from './common';
 
 
 test('multicine', async ({ page }) => {
@@ -55,7 +55,7 @@ test('multicine', async ({ page }) => {
   }
 
   // obtengo ruta de guardado
-  const savePath = JsonFileWriter.getSavePath() + JsonFileWriter.getDosPath();
+  const savePath = JsonFile.getSavePath() + JsonFile.getDosPath();
   // creao un objeto cine con las ciudades y la fecha
   const cineData = {
     ciudades: ciudadArray,
@@ -63,8 +63,8 @@ test('multicine', async ({ page }) => {
     fecha: await diahoycompleto()
   };
   SystemCommandExecutor.gitPull(savePath);
-  JsonFileWriter.saveToJson(cineData, `${savePath}/2.json`);
-  SystemCommandExecutor.gitCommitAndPush("Agregando horarios de cine", JsonFileWriter.getSavePath());
+  JsonFile.saveToJson(cineData, `${savePath}/2.json`);
+  SystemCommandExecutor.gitCommitAndPush("Agregando horarios de cine", JsonFile.getSavePath());
 
   
   if (process.env.DISABLE_TELEGRAM !== 'TRUE') {
