@@ -244,3 +244,50 @@ export class SystemCommandExecutor {
     }
   }
 }
+
+export class CineDataProcessor {
+  /**
+   * Procesa todas las películas en un objeto cineData para asignar IDs únicos
+   * @param cineData Objeto con estructura {ciudades: Ciudad[], cine: string, fecha: string}
+   * @returns Promise que se resuelve cuando todas las películas han sido procesadas
+   */
+  public static async processMovieIds(cineData: { ciudades: Ciudad[], cine: string | undefined, fecha: string }): Promise<void> {
+    // Crear un array de promesas para procesar todas las películas
+    const moviePromises: Promise<void>[] = [];
+    
+    cineData.ciudades.forEach(ciudad => {
+      ciudad.peliculas.forEach(pelicula => {
+        // Agregar cada promesa de procesamiento al array
+        moviePromises.push(
+          ProcessMovie.processsMovie(pelicula.titulo).then(idpeli => {
+            pelicula.id = idpeli;
+          })
+        );
+      });
+    });
+    
+    // Esperar a que todas las promesas se resuelvan
+    await Promise.all(moviePromises);
+  }
+
+  /**
+   * Procesa y guarda los datos del cine realizando todas las operaciones necesarias
+   * @param cineData Objeto con estructura {ciudades: Ciudad[], cine: string, fecha: string}
+   * @param fileName Nombre del archivo JSON a guardar (ej: "1.json", "2.json")
+   * @returns Promise que se resuelve cuando todo el proceso se completa
+   */
+  public static async processCineData(cineData: { ciudades: Ciudad[], cine: string | undefined, fecha: string }, fileName: string): Promise<void> {
+    const savePath = JsonFile.getSavePath() + JsonFile.getDosPath();
+    
+    SystemCommandExecutor.gitPull(savePath);
+    
+    // Procesar IDs de películas
+    await this.processMovieIds(cineData);
+    
+    // Guardar archivo JSON
+    JsonFile.saveToJson(cineData, `${savePath}/${fileName}`);
+    
+    // Commit y push
+    SystemCommandExecutor.gitCommitAndPush("Agregando horarios de cine", JsonFile.getSavePath());
+  }
+}

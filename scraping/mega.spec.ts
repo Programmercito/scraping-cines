@@ -2,7 +2,7 @@ import { test, expect, Page } from '@playwright/test';
 import dotenv from 'dotenv';
 import { parse } from 'path';
 import TeleBot from "telebot";
-import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor, ProcessMovie } from './common';
+import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor, ProcessMovie, CineDataProcessor } from './common';
 
 test('megacenter', async ({ page }) => {
 
@@ -77,16 +77,8 @@ test('megacenter', async ({ page }) => {
     fecha: await diahoycompleto()
   };
   
-  SystemCommandExecutor.gitPull(savePath);
-  //recorro las peliculas a enviar en cineData
-  cineData.ciudades.forEach(ciudad => {
-    ciudad.peliculas.forEach(async pelicula => {
-      const idpeli = await ProcessMovie.processsMovie(pelicula.titulo);
-      pelicula.id = idpeli;
-    });
-  });
-  JsonFile.saveToJson(cineData, `${savePath}/1.json`);
-  SystemCommandExecutor.gitCommitAndPush("Agregando horarios de cine", JsonFile.getSavePath());
+  // Procesar y guardar datos del cine
+  await CineDataProcessor.processCineData(cineData, "1.json");
 
 
   if (process.env.DISABLE_TELEGRAM !== 'TRUE') {
