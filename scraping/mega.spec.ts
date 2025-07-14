@@ -1,14 +1,13 @@
 import { test, expect, Page } from '@playwright/test';
 import dotenv from 'dotenv';
 import { parse } from 'path';
-import TeleBot from "telebot";
-import { JsonFileWriter, Ciudad, Pelicula, Horario, SystemCommandExecutor } from './common';
+import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor, ProcessMovie, CineDataProcessor, TelegramPublisher } from './common';
 
 test('megacenter', async ({ page }) => {
 
   let o = 0;
   let count = 0;
-  const ciudadArray: string[] = [];
+  const ciudadArray: Ciudad[] = [];
   dotenv.config();
 
   const token = process.env.TOKEN;
@@ -16,9 +15,8 @@ test('megacenter', async ({ page }) => {
   const cine = process.env.CINE2;
   const telegram = process.env.TELEGRAM;
 
-  const bot = new TeleBot({
-    token: token,
-  });
+  // Crear instancia de TelegramPublisher
+  const telegramPublisher = new TelegramPublisher(token || '', chatId || '', telegram || '');
 
   do {
     await page.goto('https://cinecenter.com.bo/');
@@ -59,8 +57,8 @@ test('megacenter', async ({ page }) => {
     await cierraPopup(page, true);
     // captura pantalla con el nombre de la ciudad
     await page.screenshot({ path: `/opt/osbo/screenshot-ciudad-${o}.png` });
-    // Procesa las películas de esta ciudad y lo guargo en un array de strings
-    const ciudad = await procesarPagina(page, texto2);
+    // Procesa las películas de esta ciudad y lo guargo en un array de Ciudad
+    const ciudad: Ciudad = await procesarPagina(page, texto2);
     // lo guargo en un array
     ciudadArray.push(ciudad);
 
@@ -69,35 +67,19 @@ test('megacenter', async ({ page }) => {
 
   } while (o < count);
   // obtengo ruta de guardado
-  const savePath = JsonFileWriter.getSavePath() + JsonFileWriter.getDosPath();
+  const savePath = JsonFile.getSavePath() + JsonFile.getDosPath();
   // creao un objeto cine con las ciudades y la fecha
   const cineData = {
     ciudades: ciudadArray,
     cine: cine,
     fecha: await diahoycompleto()
   };
-  JsonFileWriter.saveToJson(cineData, `${savePath}/1.json`);
-  SystemCommandExecutor.gitCommitAndPush("Agregando horarios de cine", JsonFileWriter.getSavePath());
+  
+  // Procesar y guardar datos del cine
+  await CineDataProcessor.processCineData(cineData, "1.json");
 
-
-  if (process.env.DISABLE_TELEGRAM !== 'TRUE') {
-    // envio 
-    for (const ciudad of ciudadArray) {
-      if (telegram === 'true') {
-
-        await bot.sendMessage(chatId, "<b>" + cine + "</b>\n" + (await diahoycompleto()) + "\n" + (await ciudad) + "\n" + cine + "\n" + (await diahoycompleto()), {
-          notification: false,
-          parseMode: 'html'
-        })
-          .then(() => console.log('Mensaje enviado'))
-          .catch((error) => console.error('Error al enviar el mensaje:', error));
-        await page.waitForTimeout(1000);
-
-      }
-      console.log(ciudad);
-
-    }
-  }
+  // Publicar en Telegram
+  await telegramPublisher.publicar(cineData, cine || '', await diahoycompleto());
 });
 
 
@@ -159,7 +141,7 @@ async function diahoycompleto() {
   const anio = hoy.getFullYear();
   return `${dia}/${mes}/${anio}`;
 }
-async function procesarPagina(page: Page, ciu: string) {
+async function procesarPagina(page: Page, ciu: string): Promise<Ciudad> {
   const listapelis = page.locator('.items-container.multifila').first();
   // recorro la lista
   const lista = listapelis.locator('.item-container');
@@ -172,7 +154,8 @@ async function procesarPagina(page: Page, ciu: string) {
     item.click();
     // espero 4 segundos
     await page.waitForTimeout(4000);
-    let pelicula: Pelicula = { titulo: '', horarios: [] };
+    let pelicula: Pelicula = { titulo: '', horarios: [], id: '' };
+
     const pe = page.locator('.nombre-pelicula');
     //leo el contenido
     const texto = await pe.evaluate((element) => element.innerHTML);
@@ -249,8 +232,7 @@ async function procesarPagina(page: Page, ciu: string) {
     await cierraPopup(page, true);
 
   }
-  const ciudadData = await ciudadString(ciudad);
-  return ciudadData;
+  return ciudad;
 }
 
 async function ciudadString(ciudad: Ciudad): Promise<string> {
