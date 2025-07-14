@@ -47,4 +47,19 @@ export class SystemCommandExecutor {
       throw new Error(`Error during git commit and push: ${error}`);
     }
   }
+
+  public static gitFetchAndReset(remote: string = 'origin', branch: string = 'main', workingDirectory?: string): string {
+    try {
+      const fetchCommand = `git fetch ${remote}`;
+      const resetCommand = `git reset --hard ${remote}/${branch}`;
+      
+      // Ejecutar fetch primero
+      this.executeCommand(fetchCommand, workingDirectory);
+      
+      // Luego ejecutar reset --hard
+      return this.executeCommand(resetCommand, workingDirectory);
+    } catch (error) {
+      throw new Error(`Error during git fetch and reset: ${error}`);
+    }
+  }
 }
