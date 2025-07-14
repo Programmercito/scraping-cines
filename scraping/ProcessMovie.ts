@@ -2,12 +2,9 @@ import { existsSync } from 'fs';
 import { randomUUID } from 'crypto';
 import { JsonFile } from './JsonFile';
 import { YouTubeApiClient, YouTubeVideo } from './YouTubeApiClient';
+import { DuckDuckGoApiClient, DuckDuckGoResponse } from './DuckDuckGoApiClient';
+import { PeliculaData } from './common';
 
-export interface PeliculaData {
-    id: string;
-    titulo: string;
-    video: string;
-}
 
 export class ProcessMovie {
     public static async processsMovie(movie: string): Promise<string> {
@@ -26,7 +23,13 @@ export class ProcessMovie {
                 // con el id de youtube de la pelicula crea un objeto PeliculaData
                 if (response) {
                     const newId = this.generarUUID();
-                    peliculas.push({ id: newId, titulo: movie, video: response.id });
+                    const moviegood = movie.split(':');
+                    movie = moviegood[0].trim();
+                    let responsed: string | null = await DuckDuckGoApiClient.searchMovie(movie);
+                    if (!responsed) {
+                        responsed = '';
+                    }
+                    peliculas.push({ id: newId, titulo: movie, video: response.id, descripcion: responsed, fecha: new Date().toISOString() });
                     JsonFile.saveToJson(peliculas, filePath);
                     return newId;
                 } else {

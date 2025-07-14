@@ -25,7 +25,7 @@ export class CineDataProcessor {
      * @param cineData Objeto con estructura {ciudades: Ciudad[], cine: string, fecha: string}
      * @returns Promise que se resuelve cuando todas las películas han sido procesadas
      */
-    public static async processMovieIds(cineData: { ciudades: Ciudad[], cine: string | undefined, fecha: string }): Promise<void> {
+    public static async processMovieIdsAndDesc(cineData: { ciudades: Ciudad[], cine: string | undefined, fecha: string }): Promise<void> {
         // Procesar todas las películas secuencialmente
         for (const ciudad of cineData.ciudades) {
             for (const pelicula of ciudad.peliculas) {
@@ -46,7 +46,7 @@ export class CineDataProcessor {
         SystemCommandExecutor.gitPull('origin', 'main', JsonFile.getSavePath());
 
         // Procesar IDs de películas
-        await this.processMovieIds(cineData);
+        await this.processMovieIdsAndDesc(cineData);
 
         // Guardar archivo JSON
         JsonFile.saveToJson(cineData, `${savePath}/${fileName}`);
