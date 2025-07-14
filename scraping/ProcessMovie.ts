@@ -4,41 +4,43 @@ import { JsonFile } from './JsonFile';
 import { YouTubeApiClient, YouTubeVideo } from './YouTubeApiClient';
 
 export interface PeliculaData {
-  id: string;
-  titulo: string;
-  video: string;
+    id: string;
+    titulo: string;
+    video: string;
 }
 
 export class ProcessMovie {
-  public static async processsMovie(movie: string): Promise<string> {
-    // aqui vamos a leer el archivo peliculas.json y ver si ahi esta una pelicula con el nombre del de la pelicula, si esta devolveremos el id de la pelicula y nada mas pero si no esta buscaremos con el nombre de la pelicula en youtube y el primer video que salga , crearemos un objeto PeliculaData con el id ( UUID aleatoreo), titulo, y video que salga en youtube y grabamos el archivo peliculas.json
-    // empezamos cargo el archivo
-    const filePath = JsonFile.getSavePath() + JsonFile.getDosPath() + '/peliculas.json';
-    if (existsSync(filePath)) {
-      const peliculas: PeliculaData[] = JsonFile.loadFromFile(filePath);
-      // busco si la pelicula ya esta
-      const peliculaExistente = peliculas.find(p => p.titulo.toLowerCase() === movie.toLowerCase());
-      if (peliculaExistente) {
-        return peliculaExistente.id;
-      } else {
-        // si no esta, busco en youtube
-        const response: YouTubeVideo | null = await YouTubeApiClient.searchTrailer(movie);
-        // con el id de youtube de la pelicula crea un objeto PeliculaData
-        if (response) {
-          const newId = this.generarUUID();
-          peliculas.push({ id: newId, titulo: movie, video: response.id });
-          JsonFile.saveToJson(peliculas, filePath);
-          return newId;
+    public static async processsMovie(movie: string): Promise<string> {
+        // aqui vamos a leer el archivo peliculas.json y ver si ahi esta una pelicula con el nombre del de la pelicula, si esta devolveremos el id de la pelicula y nada mas pero si no esta buscaremos con el nombre de la pelicula en youtube y el primer video que salga , crearemos un objeto PeliculaData con el id ( UUID aleatoreo), titulo, y video que salga en youtube y grabamos el archivo peliculas.json
+        // empezamos cargo el archivo
+        const filePath = JsonFile.getSavePath() + JsonFile.getDosPath() + '/peliculas.json';
+        if (existsSync(filePath)) {
+            const peliculas: PeliculaData[] = JsonFile.loadFromFile(filePath);
+            // busco si la pelicula ya esta
+            const peliculaExistente = peliculas.find(p => p.titulo.toLowerCase() === movie.toLowerCase());
+            if (peliculaExistente) {
+                return peliculaExistente.id;
+            } else {
+                // si no esta, busco en youtube
+                const response: YouTubeVideo | null = await YouTubeApiClient.searchTrailer(movie);
+                // con el id de youtube de la pelicula crea un objeto PeliculaData
+                if (response) {
+                    const newId = this.generarUUID();
+                    peliculas.push({ id: newId, titulo: movie, video: response.id });
+                    JsonFile.saveToJson(peliculas, filePath);
+                    return newId;
+                } else {
+                    console.warn(`No se encontró un trailer para la película: ${movie}`);
+                    return '';
+                }
+            }
         } else {
-          console.warn(`No se encontró un trailer para la película: ${movie}`);
-          return '';
+            throw new Error(`El archivo ${filePath} no existe.`);
         }
-      }
+
     }
-    throw new Error(`El archivo ${filePath} no existe.`);
-  }
-  
-  static generarUUID(): string {
-    return randomUUID();
-  }
+
+    static generarUUID(): string {
+        return randomUUID();
+    }
 }
