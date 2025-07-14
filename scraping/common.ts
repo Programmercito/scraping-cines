@@ -1,7 +1,4 @@
-import { writeFileSync, mkdirSync } from 'fs';
-import { dirname } from 'path';
-import { execSync } from 'child_process';
-
+// Core interfaces
 export interface Cine {
   ciudades: Ciudad[];
   cine: string;
@@ -13,8 +10,16 @@ export interface Ciudad {
   ciudad: string;
 }
 
+export interface PeliculaData {
+  id: string;
+  titulo: string;
+  video: string;
+  descripcion:string;
+  fecha:string;
+}
 
 export interface Pelicula {
+  id: string;
   titulo: string;
   horarios: Horario[];
 }
@@ -25,64 +30,40 @@ export interface Horario {
   formato: string;
 }
 
-export class JsonFileWriter {
-  public static saveToJson(obj: any, filePath: string): void {
-    try {
-      // Create directory if it doesn't exist
-      const dir = dirname(filePath);
-      mkdirSync(dir, { recursive: true });
-
-      // Convert object to JSON and write to file (overwrites if exists)
-      const jsonString = JSON.stringify(obj, null, 2);
-      writeFileSync(filePath, jsonString, 'utf-8');
-    } catch (error) {
-      throw new Error(`Error saving JSON to ${filePath}: ${error}`);
-    }
-  }
-  public static getSavePath(): string {
-    return '/opt/codes/horarios-cine';
-  }
-  public static getDosPath(): string {
-    return '/docs';
-  }
+export interface YouTubeVideo {
+  id: string;
+  title: string;
+  description: string;
+  thumbnailUrl: string;
+  channelTitle: string;
+  publishedAt: string;
 }
 
-export class SystemCommandExecutor {
-  public static executeCommand(command: string, workingDirectory?: string): string {
-    try {
-      const options = workingDirectory ? { cwd: workingDirectory } : {};
-      const result = execSync(command, { ...options, encoding: 'utf-8' });
-      return result;
-    } catch (error) {
-      throw new Error(`Error executing command "${command}": ${error}`);
-    }
-  }
-
-  public static gitCommit(message: string, workingDirectory?: string): string {
-    try {
-      // Commit with message (files are already tracked)
-      const commitCommand = `git commit -am "${message}"`;
-      return this.executeCommand(commitCommand, workingDirectory);
-    } catch (error) {
-      throw new Error(`Error during git commit: ${error}`);
-    }
-  }
-
-  public static gitPush(remote: string = 'origin', branch: string = 'main', workingDirectory?: string): string {
-    try {
-      const pushCommand = `git push ${remote} ${branch} --force`;
-      return this.executeCommand(pushCommand, workingDirectory);
-    } catch (error) {
-      throw new Error(`Error during git push: ${error}`);
-    }
-  } 
-
-  public static gitCommitAndPush(message: string, workingDirectory?: string, remote: string = 'origin', branch: string = 'main'): void {
-    try {
-      this.gitCommit(message, workingDirectory);
-      this.gitPush(remote, branch, workingDirectory);
-    } catch (error) {
-      throw new Error(`Error during git commit and push: ${error}`);
-    } 
-  }
+export interface YouTubeSearchResponse {
+  items: Array<{
+    id: {
+      kind: string;
+      videoId: string;
+    };
+    snippet: {
+      title: string;
+      description: string;
+      thumbnails: {
+        default: { url: string };
+        medium: { url: string };
+        high: { url: string };
+      };
+      channelTitle: string;
+      publishedAt: string;
+    };
+  }>;
 }
+
+// Re-export classes from separate files
+export { JsonFile } from './JsonFile';
+export { YouTubeApiClient } from './YouTubeApiClient';
+export { ProcessMovie } from './ProcessMovie';
+export { SystemCommandExecutor } from './SystemCommandExecutor';
+export { CineDataProcessor } from './CineDataProcessor';
+export { TelegramPublisher } from './TelegramPublisher';
+export { DuckDuckGoApiClient } from './DuckDuckGoApiClient';
