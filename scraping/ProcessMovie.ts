@@ -23,7 +23,7 @@ export class ProcessMovie {
                 if (response) {
                     const newId = this.generarUUID();
                     const moviegood = movie.split(':')[0].trim();
-                    let responsed: string | null = await DuckDuckGoApiClient.searchMovie(moviegood);  
+                    let responsed: string | null = await DuckDuckGoApiClient.searchMovie(moviegood +" pelicula");  
                     if (!responsed) {
                         responsed = '';
                     }
