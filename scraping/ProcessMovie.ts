@@ -8,7 +8,6 @@ import { PeliculaData } from './common';
 
 export class ProcessMovie {
     public static async processsMovie(movie: string): Promise<string> {
-        // aqui vamos a leer el archivo peliculas.json y ver si ahi esta una pelicula con el nombre del de la pelicula, si esta devolveremos el id de la pelicula y nada mas pero si no esta buscaremos con el nombre de la pelicula en youtube y el primer video que salga , crearemos un objeto PeliculaData con el id ( UUID aleatoreo), titulo, y video que salga en youtube y grabamos el archivo peliculas.json
         // empezamos cargo el archivo
         const filePath = JsonFile.getSavePath() + JsonFile.getDosPath() + '/peliculas.json';
         if (existsSync(filePath)) {
@@ -23,9 +22,8 @@ export class ProcessMovie {
                 // con el id de youtube de la pelicula crea un objeto PeliculaData
                 if (response) {
                     const newId = this.generarUUID();
-                    const moviegood = movie.split(':');
-                    movie = moviegood[0].trim();
-                    let responsed: string | null = await DuckDuckGoApiClient.searchMovie(movie);
+                    const moviegood = movie.split(':')[0].trim();
+                    let responsed: string | null = await DuckDuckGoApiClient.searchMovie(moviegood);  
                     if (!responsed) {
                         responsed = '';
                     }
