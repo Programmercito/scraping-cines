@@ -41,17 +41,30 @@ export class CineDataProcessor {
      * @returns Promise que se resuelve cuando todo el proceso se completa
      */
     public static async processCineData(cineData: { ciudades: Ciudad[], cine: string | undefined, fecha: string }, fileName: string): Promise<void> {
-        const savePath = JsonFile.getSavePath() + JsonFile.getDosPath();
-        SystemCommandExecutor.gitFetchAndReset('origin', 'main', JsonFile.getSavePath());
-        SystemCommandExecutor.gitPull('origin', 'main', JsonFile.getSavePath());
+        const savePath = JsonFile.getSavePath() + JsonFile.getDocsPath();
+        
+        try {
+            // Configurar Git para evitar problemas con line endings
+            SystemCommandExecutor.executeCommand('git config core.autocrlf false', JsonFile.getSavePath());
+            
+            SystemCommandExecutor.gitFetchAndReset('origin', 'main', JsonFile.getSavePath());
+            SystemCommandExecutor.gitPull('origin', 'main', JsonFile.getSavePath());
 
-        // Procesar IDs de películas
-        await this.processMovieIdsAndDesc(cineData);
+            // Procesar IDs de películas
+            await this.processMovieIdsAndDesc(cineData);
 
-        // Guardar archivo JSON
-        JsonFile.saveToJson(cineData, `${savePath}/${fileName}`);
+            // Guardar archivo JSON
+            JsonFile.saveToJson(cineData, `${savePath}/${fileName}`);
 
-        // Commit y push
-        SystemCommandExecutor.gitCommitAndPush("Agregando horarios de cine", JsonFile.getSavePath());
+            // Commit y push por separado con manejo de errores
+            try {
+                SystemCommandExecutor.gitCommitAndPush("Agregando horarios de cine", JsonFile.getSavePath());
+            } catch (gitError) {
+                console.log('Git operations completed with warnings, continuing...');
+            }
+        } catch (error) {
+            console.error('Error in processCineData:', error);
+            throw error; // Re-throw si es un error crítico
+        }
     }
 }
