@@ -2,7 +2,7 @@ import { existsSync } from 'fs';
 import { randomUUID } from 'crypto';
 import { JsonFile } from './JsonFile';
 import { YouTubeApiClient, YouTubeVideo } from './YouTubeApiClient';
-import { DuckDuckGoApiClient, DuckDuckGoResponse } from './DuckDuckGoApiClient';
+import { TheMoviedbClient } from './TheMoviedbClient';
 import { PeliculaData } from './common';
 
 
@@ -23,9 +23,10 @@ export class ProcessMovie {
                 if (response) {
                     const newId = this.generarUUID();
                     const moviegood = movie.split(':')[0].trim();
-                    let responsed: string | null = await DuckDuckGoApiClient.searchMovie(moviegood +" pelicula");  
-                    if (!responsed) {
-                        responsed = '';
+                    let responsed: any = await TheMoviedbClient.getMovieInformation(moviegood +" pelicula");
+                    let overview = responsed?.overview || '';  
+                    if (!overview) {
+                        responsed = overview;
                     }
                     peliculas.push({ id: newId, titulo: movie, video: response.id, descripcion: responsed, fecha: new Date().toISOString() });
                     JsonFile.saveToJson(peliculas, filePath);
