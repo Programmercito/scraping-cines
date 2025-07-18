@@ -14,7 +14,7 @@ export interface PeliculaData {
   id: string;
   titulo: string;
   video: string;
-  descripcion:string;
+  extras:string;
   fecha:string;
 }
 
