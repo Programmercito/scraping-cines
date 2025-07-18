@@ -66,4 +66,4 @@ export { ProcessMovie } from './ProcessMovie';
 export { SystemCommandExecutor } from './SystemCommandExecutor';
 export { CineDataProcessor } from './CineDataProcessor';
 export { TelegramPublisher } from './TelegramPublisher';
-export { DuckDuckGoApiClient } from './DuckDuckGoApiClient';
+export { TheMoviedbClient } from './TheMoviedbClient';
