@@ -9,7 +9,7 @@ import { PeliculaData } from './common';
 export class ProcessMovie {
     public static async processsMovie(movie: string): Promise<string> {
         // empezamos cargo el archivo
-        const filePath = JsonFile.getSavePath() + JsonFile.getDosPath() + '/peliculas.json';
+        const filePath = JsonFile.getSavePath() + JsonFile.getDocsPath() + '/peliculas.json';
         if (existsSync(filePath)) {
             const peliculas: PeliculaData[] = JsonFile.loadFromFile(filePath);
             // busco si la pelicula ya esta
