@@ -23,7 +23,7 @@ export class ProcessMovie {
                 if (response) {
                     const newId = this.generarUUID();
                     const moviegood = movie.split(':')[0].trim();
-                    let responsed: any = await TheMoviedbClient.getMovieInformation(moviegood +" pelicula");
+                    let responsed: any = await TheMoviedbClient.getMovieInformation(moviegood);
                     let overview = responsed?.overview || '';  
                     if (!overview) {
                         responsed = overview;
