@@ -24,11 +24,7 @@ export class ProcessMovie {
                     const newId = this.generarUUID();
                     const moviegood = movie.split(':')[0].trim();
                     let responsed: any = await TheMoviedbClient.getMovieInformation(moviegood);
-                    let overview = responsed?.overview || '';  
-                    if (!overview) {
-                        responsed = overview;
-                    }
-                    peliculas.push({ id: newId, titulo: movie, video: response.id, descripcion: responsed, fecha: new Date().toISOString() });
+                    peliculas.push({ id: newId, titulo: movie, video: response.id, extras: responsed, fecha: new Date().toISOString() });
                     JsonFile.saveToJson(peliculas, filePath);
                     return newId;
                 } else {
