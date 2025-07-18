@@ -11,7 +11,7 @@ export class TheMoviedbClient {
             }
 
             const encodedQuery = encodeURIComponent(movieName);
-            const url = `${this.baseUrl}/search/movie?api_key=${apiKey}&query=${encodedQuery}&language=es-ES`;
+            const url = `${this.baseUrl}/search/?api_key=${apiKey}&query=${encodedQuery}&language=es-ES`;
 
             const response = await fetch(url);
 
