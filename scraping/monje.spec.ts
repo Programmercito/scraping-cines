@@ -3,9 +3,8 @@ import dotenv from 'dotenv';
 import { parse } from 'path';
 import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor, ProcessMovie, CineDataProcessor, TelegramPublisher } from './common';
 
-
 test('multicine', async ({ page }) => {
-
+    dotenv.config();
     const token = process.env.TOKEN;
     const chatId = process.env.CHATID;
     const cine = process.env.CINE3;
@@ -22,7 +21,7 @@ test('multicine', async ({ page }) => {
     console.log(`Total de elementos encontrados en ciudades: ${count}`);
     let ciudads = "La Paz";
     let peliculas: Pelicula[] = [];
-    let ciudad: Ciudad= { peliculas: [], ciudad: ciudads };
+    let ciudad: Ciudad = { peliculas: [], ciudad: ciudads };
     for (let i = 0; i < count; i++) {
         let item = items.nth(i);
         let Pelicula: Pelicula = { id: '', titulo: '', horarios: [] };
@@ -42,13 +41,18 @@ test('multicine', async ({ page }) => {
             let spanTexto = await spans.nth(j).innerText();
             let spanTextoTrim = spanTexto.trim();
             let horario = spanTextoTrim.split(' ');
-            // recorro el array horario y por cada uno agrego a horarios
-            for (let k = 0; k < horario.length; k++) {
-                horarios.push({ horario: horario[k], idioma: idioma, formato: formato });
+            // busco si hay una class dentro llamada far fa-clock
+            let li = await spans.nth(j).locator('.far.fa-clock').count();
+            if (li > 0) {
+                // recorro el array horario y por cada uno agrego a horarios
+                for (let k = 0; k < horario.length; k++) {
+                    horarios.push({ horario: horario[k], idioma: idioma, formato: formato });
+                }
             }
         }
         Pelicula.horarios = horarios;
         Pelicula.titulo = titulo;
+        peliculas.push(Pelicula);
     }
     ciudad.peliculas = peliculas;
     let ciudadArray: Ciudad[] = [];
