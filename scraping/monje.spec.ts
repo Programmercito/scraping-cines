@@ -55,7 +55,7 @@ test('multicine', async ({ page }) => {
     ciudadArray.push(ciudad);
 
     // obtengo ruta de guardado
-    const savePath = JsonFile.getSavePath() + JsonFile.getDosPath();
+    const savePath = JsonFile.getSavePath() + JsonFile.getDocsPath();
     // creao un objeto cine con las ciudades y la fecha
     const cineData = {
         ciudades: ciudadArray,

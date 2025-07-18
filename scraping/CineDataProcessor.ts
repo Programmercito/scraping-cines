@@ -41,7 +41,7 @@ export class CineDataProcessor {
      * @returns Promise que se resuelve cuando todo el proceso se completa
      */
     public static async processCineData(cineData: { ciudades: Ciudad[], cine: string | undefined, fecha: string }, fileName: string): Promise<void> {
-        const savePath = JsonFile.getSavePath() + JsonFile.getDosPath();
+        const savePath = JsonFile.getSavePath() + JsonFile.getDocsPath();
         SystemCommandExecutor.gitFetchAndReset('origin', 'main', JsonFile.getSavePath());
         SystemCommandExecutor.gitPull('origin', 'main', JsonFile.getSavePath());
 
