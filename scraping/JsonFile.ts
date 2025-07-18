@@ -20,7 +20,7 @@ export class JsonFile {
     return '/opt/codes/horarios-cine';
   }
   
-  public static getDosPath(): string {
+  public static getDocsPath(): string {
     return '/docs';
   }
   
