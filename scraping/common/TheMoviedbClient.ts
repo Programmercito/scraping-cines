@@ -11,11 +11,7 @@ export class TheMoviedbClient {
             if (!apiKey) {
                 throw new Error('THEMOVIEDB_KEY environment variable is required');
             }
-            let peliculaNameEN = await LingvaTranslationClient.translateFromSpanishToEnglish(movieName);
-            if (!peliculaNameEN) {
-                peliculaNameEN=movieName;
-            }
-            const encodedQuery = encodeURIComponent(peliculaNameEN);
+            const encodedQuery = encodeURIComponent(movieName);
             const url = `${this.baseUrl}/search/movie?api_key=${apiKey}&query=${encodedQuery}&language=es-ES`;
 
             const response = await fetch(url);

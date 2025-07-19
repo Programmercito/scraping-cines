@@ -4,6 +4,7 @@ import { JsonFile } from './JsonFile';
 import { YouTubeApiClient, YouTubeVideo } from './YouTubeApiClient';
 import { TheMoviedbClient } from './TheMoviedbClient';
 import { PeliculaData } from './common';
+import { StringNormalizer } from './StringNormalizer';
 
 
 export class ProcessMovie {
@@ -22,8 +23,12 @@ export class ProcessMovie {
                 // con el id de youtube de la pelicula crea un objeto PeliculaData
                 if (response) {
                     const newId = this.generarUUID();
-                    const moviegood = movie.split(':')[0].trim();
+                    let moviegood = movie.split(':')[0].trim();
                     let responsed: any = await TheMoviedbClient.getMovieInformation(moviegood);
+                    if (!responsed){
+                        moviegood = StringNormalizer.normalizeMovieTitle(response.title);
+                        responsed = await TheMoviedbClient.getMovieInformation(moviegood);
+                    }
                     peliculas.push({ id: newId, titulo: movie, video: response.id, extras: responsed, fecha: new Date().toISOString() });
                     JsonFile.saveToJson(peliculas, filePath);
                     return newId;
