@@ -15,7 +15,7 @@ export class TheMoviedbClient {
             const url = `${this.baseUrl}/search/movie?api_key=${apiKey}&query=${encodedQuery}&language=es-ES`;
 
             const response = await fetch(url);
-
+ 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
