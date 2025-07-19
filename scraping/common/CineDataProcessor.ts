@@ -65,6 +65,6 @@ export class CineDataProcessor {
         } catch (error) {
             console.error('Error in processCineData:', error);
             throw error; // Re-throw si es un error crítico
-        }  
+        }   
     }
 }
