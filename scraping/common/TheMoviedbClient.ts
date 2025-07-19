@@ -1,3 +1,5 @@
+import { LingvaTranslationClient } from "./LingvaTranslationClient";
+
 export class TheMoviedbClient {
     private static baseUrl = 'https://api.themoviedb.org/3';
 
@@ -9,8 +11,11 @@ export class TheMoviedbClient {
             if (!apiKey) {
                 throw new Error('THEMOVIEDB_KEY environment variable is required');
             }
-
-            const encodedQuery = encodeURIComponent(movieName);
+            let peliculaNameEN = await LingvaTranslationClient.translateFromSpanishToEnglish(movieName);
+            if (!peliculaNameEN) {
+                peliculaNameEN=movieName;
+            }
+            const encodedQuery = encodeURIComponent(peliculaNameEN);
             const url = `${this.baseUrl}/search/movie?api_key=${apiKey}&query=${encodedQuery}&language=es-ES`;
 
             const response = await fetch(url);
