@@ -17,7 +17,7 @@ test('multicine', async ({ page }) => {
     // dentro busco los con class col
     const items = contenedor.locator('.col');
     // recorro todos los encontrados
-    const count = await items.count();
+    const count = await items.count(); 
     console.log(`Total de elementos encontrados en ciudades: ${count}`);
     let ciudads = "La Paz";
     let peliculas: Pelicula[] = [];
