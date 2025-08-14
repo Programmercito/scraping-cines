@@ -19,12 +19,15 @@ test('megacenter', async ({ page }) => {
   const telegramPublisher = new TelegramPublisher(token || '', chatId || '', telegram || '');
 
   do {
+    console.log("Iniciando!!!");
     await page.goto('https://cinecenter.com.bo/');
     // espero a que cargue 20 segundos la pagina
     await page.waitForTimeout(10000);
+    console.log("termino espera!!!");
     // guardo una captura 
 
     await cierraPopup(page, true);
+    console.log("se cerro poppup comenzamos!!!");
     // cargamos capturamos la pantalla
 
 
