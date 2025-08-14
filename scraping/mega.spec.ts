@@ -114,6 +114,7 @@ async function cierraPopup(page, reload = false) {
       console.log(`Intento ${intentos} - elementos encontrados: ${coun}`);
     }
   }
+  console.log("proceso a tratar de cerrar popups");
   // obetenemos el modal que tiene la clase modal-content
   const boton = await page.$('.btn-cerrar');
   // verifico si esta visible
