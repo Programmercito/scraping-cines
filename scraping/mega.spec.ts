@@ -26,7 +26,7 @@ test('megacenter', async ({ page }) => {
     console.log("termino espera!!!");
     // guardo una captura 
 
-    await cierraPopup(page, true);
+    await cierraPopup(page, false);
     console.log("se cerro poppup comenzamos!!!");
     // cargamos capturamos la pantalla
 
@@ -98,6 +98,7 @@ async function refrescarPagina(page: Page) {
 
 async function cierraPopup(page, reload = false) {
   if (reload) {
+    console.log("entrando a cierra poppup");
     await page.waitForTimeout(20000);
     let listapelis = page.locator('.items-container.multifila').first();
     // recorro la lista
