@@ -25,9 +25,10 @@ test('megacenter', async ({ page }) => {
     await page.waitForTimeout(10000);
     console.log("termino espera!!!");
     // guardo una captura 
-
+    
     await cierraPopup(page, false);
     console.log("se cerro poppup comenzamos!!!");
+
     // cargamos capturamos la pantalla
 
 
@@ -119,14 +120,14 @@ async function cierraPopup(page, reload = false) {
   const boton = await page.$('.btn-cerrar');
   // verifico si esta visible
   const visible = await boton?.isVisible();
-
   // si el modal existe lo cerramos
   if (boton && visible) {
-    // intento hacer clic en el botón de cierre dentro del modal
-    await boton.click();
+    // fuerzo el click
+    await boton.click({ force: true });
     await page.waitForTimeout(5000);
     console.log("funciono se cerro el poppup!");
   }
+
 }
 
 
