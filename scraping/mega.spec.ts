@@ -58,7 +58,7 @@ test('megacenter', async ({ page }) => {
 
     await cierraPopup(page, true);
     // captura pantalla con el nombre de la ciudad
-    await page.screenshot({ path: `/opt/screenshot-ciudad-${o}.png` });
+    await page.screenshot({ path: `/opt/osbo/screenshot-ciudad-${o}.png` });
     // Procesa las películas de esta ciudad y lo guargo en un array de Ciudad
     const ciudad: Ciudad = await procesarPagina(page, texto2);
     // lo guargo en un array
