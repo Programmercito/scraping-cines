@@ -125,7 +125,7 @@ async function cierraPopup(page, reload = false) {
     // intento hacer clic en el botón de cierre dentro del modal
     await boton.click();
     await page.waitForTimeout(5000);
-
+    console.log("funciono se cerro el poppup!");
   }
 }
 
