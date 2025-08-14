@@ -25,7 +25,7 @@ test('megacenter', async ({ page }) => {
     await page.waitForTimeout(10000);
     // guardo una captura 
     
-    await cierraPopup(page, false);
+    await cierraPopup(page, true);
 
     // cargamos capturamos la pantalla
 
