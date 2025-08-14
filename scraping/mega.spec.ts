@@ -19,15 +19,13 @@ test('megacenter', async ({ page }) => {
   const telegramPublisher = new TelegramPublisher(token || '', chatId || '', telegram || '');
 
   do {
-    console.log("Iniciando!!!");
+    console.log("Iniciando");
     await page.goto('https://cinecenter.com.bo/');
     // espero a que cargue 20 segundos la pagina
     await page.waitForTimeout(10000);
-    console.log("termino espera!!!");
     // guardo una captura 
     
     await cierraPopup(page, false);
-    console.log("se cerro poppup comenzamos!!!");
 
     // cargamos capturamos la pantalla
 
@@ -60,7 +58,7 @@ test('megacenter', async ({ page }) => {
 
     await cierraPopup(page, true);
     // captura pantalla con el nombre de la ciudad
-    await page.screenshot({ path: `/opt/osbo/screenshot-ciudad-${o}.png` });
+    await page.screenshot({ path: `/opt/screenshot-ciudad-${o}.png` });
     // Procesa las películas de esta ciudad y lo guargo en un array de Ciudad
     const ciudad: Ciudad = await procesarPagina(page, texto2);
     // lo guargo en un array
@@ -127,7 +125,16 @@ async function cierraPopup(page, reload = false) {
     await page.waitForTimeout(5000);
     console.log("funciono se cerro el poppup!");
   }
-
+  const boton2 = await page.$('.btn-cerrar');
+  // verifico si esta visible
+  const visible2 = await boton2?.isVisible();
+  // si el modal existe lo cerramos
+  if (boton2 && visible2) {
+    // fuerzo el click
+    await boton2.click({ force: true });
+    await page.waitForTimeout(5000);
+    console.log("funciono se cerro el poppup2!");
+  }
 }
 
 
