@@ -24,7 +24,7 @@ test('megacenter', async ({ page }) => {
     // espero a que cargue 20 segundos la pagina
     await page.waitForTimeout(10000);
     // guardo una captura 
-    
+
     await cierraPopup(page, true);
 
     // cargamos capturamos la pantalla
@@ -76,7 +76,7 @@ test('megacenter', async ({ page }) => {
     cine: cine,
     fecha: await diahoycompleto()
   };
-  
+
   // Procesar y guardar datos del cine
   await CineDataProcessor.processCineData(cineData, "1.json");
 
@@ -116,26 +116,21 @@ async function cierraPopup(page, reload = false) {
   }
   console.log("proceso a tratar de cerrar popups");
   // obetenemos el modal que tiene la clase modal-content
-  const boton = await page.$('.btn-cerrar');
-  // verifico si esta visible
-  const visible = await boton?.isVisible();
-  // si el modal existe lo cerramos
-  if (boton && visible) {
-    // fuerzo el click
-    await boton.click({ force: true });
-    await page.waitForTimeout(5000);
-    console.log("funciono se cerro el poppup!");
+  const boton = await page.locator('.btn-cerrar');
+  const tam=await boton.count();
+  // verifico si son muchos botones
+  if (tam > 0) {
+    for (let i = 0; i < tam; i++) {
+      const b = boton.nth(i);
+      const visible = await b.isVisible();
+      if (visible) {
+        await b.click({ force: true });
+        await page.waitForTimeout(5000);
+        console.log('Cerrando popup');
+      }
+    }
   }
-  const boton2 = await page.$('.btn-cerrar');
-  // verifico si esta visible
-  const visible2 = await boton2?.isVisible();
-  // si el modal existe lo cerramos
-  if (boton2 && visible2) {
-    // fuerzo el click
-    await boton2.click({ force: true });
-    await page.waitForTimeout(5000);
-    console.log("funciono se cerro el poppup2!");
-  }
+
 }
 
 
