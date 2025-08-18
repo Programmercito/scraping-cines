@@ -26,7 +26,7 @@ test('megacenter', async ({ page }) => {
     // guardo una captura 
 
     await cierraPopup(page, true);
-
+    await page.screenshot({ path: '/opt/osbo/screenshot-inicio.png' });
     // cargamos capturamos la pantalla
 
 
@@ -52,7 +52,7 @@ test('megacenter', async ({ page }) => {
     // imprimo el texto dentro de item
     const texto2 = await item.evaluate((element) => element.innerHTML);
     if (texto2) {
-      console.log(texto2);
+      console.log("ciudad",texto2);
     }
     item.click();
 
@@ -120,12 +120,13 @@ async function cierraPopup(page, reload = false) {
   const tam=await boton.count();
   // verifico si son muchos botones
   if (tam > 0) {
-    for (let i = 0; i < tam; i++) {
+    for (let i = tam-1; i > -1; i--) {
       const b = boton.nth(i);
       const visible = await b.isVisible();
       if (visible) {
         await b.click({ force: true });
         await page.waitForTimeout(5000);
+        await page.screenshot({ path: `/opt/osbo/screenshot-popup-${i}.png` });
         console.log('Cerrando popup');
       }
     }
@@ -166,6 +167,7 @@ async function procesarPagina(page: Page, ciu: string): Promise<Ciudad> {
 
     const pe = page.locator('.nombre-pelicula');
     //leo el contenido
+    await page.screenshot({ path: '/opt/osbo/screenshot-pelicula111.png' });
     const texto = await pe.evaluate((element) => element.innerHTML);
     if (texto) {
       console.log(texto);
