@@ -72,7 +72,7 @@ test('multicine', async ({  }) => {
   await page.reload({ waitUntil: "networkidle" }).catch(() => {});
 
 
-  await page.screenshot({ path: "screenshot-inicio.png", fullPage: true });
+  await page.screenshot({ path: "/opt/osbo/screenshot-inicio.png", fullPage: true });
   const header = page.locator('.dropdownHeader').last();
   await header.click();
   const items = page.locator('.dropdownBody.open');
