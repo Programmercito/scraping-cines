@@ -1,14 +1,75 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect, Page, chromium } from '@playwright/test';
 import dotenv from 'dotenv';
 import { parse } from 'path';
 import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor, ProcessMovie, CineDataProcessor, TelegramPublisher } from './common/common';
 
 
-test('multicine', async ({ page }) => {
+test('multicine', async ({  }) => {
+  const browser = await chromium.launch({
+    channel: "chrome",              // usa Chrome real si está instalado
+    headless: false,                // muchos WAF bloquean headless clásico
+    args: [
+      "--disable-blink-features=AutomationControlled",
+    ],
+  });
 
-  await page.goto('https://www.multicine.com.bo/', { waitUntil: 'load' });
-  await page.waitForTimeout(20000); // espera a que la página cargue completamente
-  //await login(page);
+  const context = await browser.newContext({
+    // Finge un navegador real
+    userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/117.0.0.0 Safari/537.36",
+    locale: "es-BO",
+    timezoneId: "America/La_Paz",
+    viewport: { width: 1366, height: 768 },
+
+    // Headers “de navegador” (Accept-Encoding lo gestiona Playwright/Chrome)
+    extraHTTPHeaders: {
+      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+      "Accept-Language": "es-ES,es;q=0.9",
+      "Cache-Control": "max-age=0",
+      "Upgrade-Insecure-Requests": "1",
+      // Client Hints y sec-fetch (algunos WAF los esperan)
+      "sec-ch-ua": `"Chromium";v="117", "Not)A;Brand";v="24", "Google Chrome";v="117"`,
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": `"Windows"`,
+      "Sec-Fetch-Site": "none",
+      "Sec-Fetch-Mode": "navigate",
+      "Sec-Fetch-User": "?1",
+      "Sec-Fetch-Dest": "document",
+    },
+  });
+
+  // Quita navigator.webdriver y pequeños fingerprints
+  await context.addInitScript(() => {
+    Object.defineProperty(navigator, "webdriver", { get: () => undefined });
+    // “plugins” y “languages” no vacíos ayuda con fingerprints simples
+    Object.defineProperty(navigator, "plugins", { get: () => [{ name: "Chrome PDF Plugin" }] });
+    Object.defineProperty(navigator, "languages", { get: () => ["es-BO", "es", "en"] });
+  });
+
+  // Asegura Referer en TODAS las requests de navegación/redirects
+  await context.route("**/*", async (route) => {
+    const req = route.request();
+    const headers = {
+      ...req.headers(),
+      "referer": "https://www.google.com/",
+    };
+    await route.continue({ headers });
+  });
+
+  const page = await context.newPage();
+
+  // Usa referer también en la navegación principal
+  await page.goto("https://www.multicine.com.bo/", {
+    referer: "https://www.google.com/",
+    waitUntil: "domcontentloaded",
+  });
+
+  // Deja que pasen challenges JS breves
+  await page.waitForLoadState("networkidle", { timeout: 15000 });
+
+  // Algunos WAF hacen un redirect tardío; recarga suave
+  try { await page.reload({ waitUntil: "networkidle" }); } catch {}
+
+  await page.screenshot({ path: "screenshot-inicio.png", fullPage: true });
   const header = page.locator('.dropdownHeader').last();
   await header.click();
   const items = page.locator('.dropdownBody.open');

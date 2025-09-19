@@ -95,7 +95,7 @@ async function refrescarPagina(page: Page) {
   await page.waitForTimeout(20000);
 }
 
-async function cierraPopup(page, reload = false) {
+async function cierraPopup(page: Page, reload = false) {
   if (reload) {
     console.log("entrando a cierra poppup");
     await page.waitForTimeout(20000);
