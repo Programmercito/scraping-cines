@@ -6,7 +6,7 @@ import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor, ProcessMovi
 
 test('multicine', async ({  }) => {
   const browser = await chromium.launch({
-    headless: true, // en contenedor: headless moderno (ok para WAFs ligeros)
+    headless: false, // en contenedor: headless moderno (ok para WAFs ligeros)
     args: [
       "--no-sandbox",
       "--disable-dev-shm-usage",
@@ -131,7 +131,8 @@ test('multicine', async ({  }) => {
 });
 
 async function procesarPagina(page: Page) {
-  const list = page.locator('.grid-row.custom-row');
+  const list = page.locator('.grid-row.custom-row').last();
+  console.log("cantidad: ",await list.count());
   const listabotones = list.locator('.button.is-small.w-button.buy_tickets.false');
   const count = await listabotones.count();
   console.log(`Total de películas encontradas: ${count}`);
@@ -143,7 +144,7 @@ async function procesarPagina(page: Page) {
 
   // Recorre todas las películas disponibles
   if (count > 0) {
-    for (let i = 0; i < count; i++) {
+    for (let i = 9; i < count; i++) {
       const item = listabotones.nth(i);
       await item.click();
       await page.waitForTimeout(25000); // espera a que cargue la información de la película
@@ -171,6 +172,7 @@ async function procesarHorarios(page: Page): Promise<Pelicula | null> {
   // Obtiene el título de la película
   const titulo = await page.locator('.text-size-xlarge.text-weight-semibold.text-color-white').first();
   let pelicula: Pelicula = { titulo: '', horarios: [], id: '' };
+  await page.screenshot({ path: '/opt/osbo/screenshot-peliculaa123.png' });
   pelicula.titulo = await titulo.innerText();
   console.log(`Título de película: ${pelicula.titulo}`);
   // si pelicula.titulo tiene valor continuo
