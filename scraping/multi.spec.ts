@@ -4,7 +4,7 @@ import { parse } from 'path';
 import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor, ProcessMovie, CineDataProcessor, TelegramPublisher } from './common/common';
 
 
-test('multicine', async ({  }) => {
+test('multicine', async ({ }) => {
   const browser = await chromium.launch({
     headless: false, // en contenedor: headless moderno (ok para WAFs ligeros)
     args: [
@@ -67,9 +67,9 @@ test('multicine', async ({  }) => {
   });
 
   // Deja respirar al challenge JS si existe
-  await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
+  await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => { });
   // Reload suave (algunos WAF levantan el gate después de 1 ciclo)
-  await page.reload({ waitUntil: "networkidle" }).catch(() => {});
+  await page.reload({ waitUntil: "networkidle" }).catch(() => { });
 
 
   await page.screenshot({ path: "/opt/osbo/screenshot-inicio.png", fullPage: true });
@@ -98,7 +98,7 @@ test('multicine', async ({  }) => {
   for (let i = 1; i < count; i++) {
     const item = dropdownItems.nth(i);
     await item.click();
-    await page.waitForTimeout(20000); // espera a que cargue la ciudad seleccionada
+    await page.waitForTimeout(3000); // espera a que cargue la ciudad seleccionada
 
     // Guarda captura de la página con la ciudad seleccionada
     //await page.screenshot({ path: `screenshot-ciudad-${i}.png` });
@@ -110,7 +110,7 @@ test('multicine', async ({  }) => {
 
     // Vuelve a la página principal para seleccionar la siguiente ciudad
     await page.goto('https://www.multicine.com.bo/', { waitUntil: 'load' });
-    await page.waitForTimeout(20000);
+    await page.waitForTimeout(3000);
     const header = page.locator('.dropdownHeader').last();
     await header.click();
   }
@@ -122,7 +122,7 @@ test('multicine', async ({  }) => {
     cine: cine,
     fecha: await diahoycompleto()
   };
-  
+
   // Procesar y guardar datos del cine
   await CineDataProcessor.processCineData(cineData, "2.json");
 
@@ -132,7 +132,7 @@ test('multicine', async ({  }) => {
 
 async function procesarPagina(page: Page) {
   const list = page.locator('.grid-row.custom-row').last();
-  console.log("cantidad: ",await list.count());
+  console.log("cantidad: ", await list.count());
   const listabotones = list.locator('.button.is-small.w-button.buy_tickets.false');
   const count = await listabotones.count();
   console.log(`Total de películas encontradas: ${count}`);
@@ -144,10 +144,10 @@ async function procesarPagina(page: Page) {
 
   // Recorre todas las películas disponibles
   if (count > 0) {
-    for (let i = 9; i < count; i++) {
+    for (let i = 0; i < count; i++) {
       const item = listabotones.nth(i);
       await item.click();
-      await page.waitForTimeout(25000); // espera a que cargue la información de la película
+      await page.waitForTimeout(3000); // espera a que cargue la información de la película
 
       // Guarda captura de la pantalla de detalles de la película
       //await page.screenshot({ path: `screenshot-pelicula-${i}.png` });
@@ -172,7 +172,6 @@ async function procesarHorarios(page: Page): Promise<Pelicula | null> {
   // Obtiene el título de la película
   const titulo = await page.locator('.text-size-xlarge.text-weight-semibold.text-color-white').first();
   let pelicula: Pelicula = { titulo: '', horarios: [], id: '' };
-  await page.screenshot({ path: '/opt/osbo/screenshot-peliculaa123.png' });
   pelicula.titulo = await titulo.innerText();
   console.log(`Título de película: ${pelicula.titulo}`);
   // si pelicula.titulo tiene valor continuo
@@ -204,7 +203,7 @@ async function procesarHorarios(page: Page): Promise<Pelicula | null> {
   if (escogido) {
 
     escogido.click({ force: true });
-    await page.waitForTimeout(20000);
+    await page.waitForTimeout(3000);
 
     const tipospeli = page.locator('.showtimesrow');
     const count = await tipospeli.count();
@@ -234,7 +233,7 @@ async function procesarHorarios(page: Page): Promise<Pelicula | null> {
     }
     if (url !== page.url() && page.url() !== 'https://www.multicine.com.bo/') {
       await page.goBack();
-      await page.waitForTimeout(5000);
+      await page.waitForTimeout(3000);
       console.log('Volviendo a la lista de películas extra');
     }
     await page.goBack();
@@ -244,7 +243,7 @@ async function procesarHorarios(page: Page): Promise<Pelicula | null> {
 
   } else {
     await page.goBack();
-    await page.waitForTimeout(20000);
+    await page.waitForTimeout(3000);
     // No se encontró la pestaña para el día siguiente
     return null;
   }
@@ -254,7 +253,7 @@ async function login(page: Page) {
   // Hace clic en el botón de inicio de sesión
   const login = page.locator('.top-nav_label.is-mobile').first();
   login.click();
-  await page.waitForTimeout(20000);
+  await page.waitForTimeout(3000);
 
   // Ingresa credenciales de usuario
   const email = page.locator('input[name="email"]').first();
@@ -268,13 +267,14 @@ async function login(page: Page) {
   await button.click({ force: true });
 
   // Espera a que se complete el inicio de sesión
-  await page.waitForTimeout(20000);
+  await page.waitForTimeout(3000);
 }
 
 async function diahoy() {
-  // Calcula el número del día de mañana (ej: si hoy es 14, mañana es 15)
-  const hoy = new Date();
-  const dia = hoy.getDate();
+  // Calcula el número del día del dia ma;ana
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const dia = tomorrow.getDate();
   return dia;
 }
 // funcion con la fecha de ma;ana dia mes a;o
