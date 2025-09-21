@@ -177,6 +177,8 @@ async function procesarHorarios(page: Page): Promise<Pelicula | null> {
   // si pelicula.titulo tiene valor continuo
   if (pelicula.titulo === '') {
     console.log('No se encontró el título de la película');
+    await page.goBack();
+    await page.waitForTimeout(3000);
     return null;
   }
   const dia = await diahoy();
