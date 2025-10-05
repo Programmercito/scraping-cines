@@ -65,6 +65,7 @@ test('multicine', async ({ }) => {
     referer: "https://www.google.com/",
     waitUntil: "domcontentloaded",
   });
+  await page.screenshot({ path: "/opt/osbo/screenshot-iniciom.png", fullPage: true });
 
   // Deja respirar al challenge JS si existe
   await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => { });
