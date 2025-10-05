@@ -6,7 +6,7 @@ import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor, ProcessMovi
 
 test('multicine', async ({ }) => {
   const browser = await chromium.launch({
-    headless: false, // en contenedor: headless moderno (ok para WAFs ligeros)
+    headless: true, // en contenedor: headless moderno (ok para WAFs ligeros)
     args: [
       "--no-sandbox",
       "--disable-dev-shm-usage",
