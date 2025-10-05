@@ -65,15 +65,15 @@ test('multicine', async ({ }) => {
     referer: "https://www.google.com/",
     waitUntil: "domcontentloaded",
   });
-  await page.screenshot({ path: "/opt/osbo/screenshot-iniciom.png", fullPage: true });
-
   // Deja respirar al challenge JS si existe
   await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => { });
   // Reload suave (algunos WAF levantan el gate después de 1 ciclo)
   await page.reload({ waitUntil: "networkidle" }).catch(() => { });
 
 
-  await page.screenshot({ path: "/opt/osbo/screenshot-inicio.png", fullPage: true });
+  // espero 10 segundos
+  await page.waitForTimeout(15000);
+  await page.screenshot({ path: "/opt/osbo/screenshot-iniciox.png", fullPage: true });
   const header = page.locator('.dropdownHeader').last();
   await header.click();
   const items = page.locator('.dropdownBody.open');
