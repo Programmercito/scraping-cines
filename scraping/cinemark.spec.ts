@@ -104,7 +104,7 @@ async function procesapelicula(page: Page): Promise<Pelicula> {
   peli.titulo = textot.trim();
   peli.horarios = [];
   const listaHorarios = page.locator('.movie-schedule');
-  const items = await listaHorarios.locator('.box-movie-format');
+  const items = listaHorarios.locator('.box-movie-format');
   if (await items.count() > 0) {
     for (let j = 0; j < await items.count(); j++) {
       const item = items.nth(j);
@@ -112,19 +112,17 @@ async function procesapelicula(page: Page): Promise<Pelicula> {
       const lenguajediv = item.locator('.movie-lenguaje');
 
       if (await lenguajediv.count() > 0) {
-        const idioma = lenguajediv.locator('.tag-DOB');
-        if (await idioma.count() > 0) {
-          horario.idioma = await idioma.first().textContent() || '';
-        }
+        const idioma = await lenguajediv.textContent();
+        horario.idioma = idioma || '';
 
       }
-      const formato = await page.locator('.movie-version');
+      const formato = item.locator('.movie-version');
       if (await formato.count() > 0) {
-        horario.formato = await formato.textContent() || '';
+        horario.formato = (await formato.textContent() || '').trim();
       }
-      const hora = await item.locator('.movie-times');
+      const hora = item.locator('.movie-times');
       if (await hora.count() > 0) {
-        const lista = await hora.locator('.btn.btn-buy');
+        const lista = hora.locator('.btn.btn-buy');
         if (await lista.count() > 0) {
           for (let k = 0; k < await lista.count(); k++) {
             const horaItem = lista.nth(k);
