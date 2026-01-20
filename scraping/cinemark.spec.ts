@@ -25,11 +25,12 @@ test('megacenter', async ({ page }) => {
   await page.waitForTimeout(10000);
   // guardo una captura 
   await cierraPopup(page);
+  await page.screenshot({ path: `/opt/osbo/cinemarkiiiii${o}.png`, fullPage: true });
   // obtengo el componente que tiene las pelis con clase "transform: translateX(0px); transition: transform 0.5s; flex-basis: 269px; visibility: visible;"
   const peliculasContainer = page.locator('.VueCarousel-inner');
   const pelis = await peliculasContainer.locator('.VueCarousel-slide.weekly-billboard');
   console.log("Peliculas encontradas:", await pelis.count());
-  await page.screenshot({ path: `cinemark${o}.png`, fullPage: true });
+  await page.screenshot({ path: `/opt/osbo/cinemark${o}.png`, fullPage: true });
   const ciudad: Ciudad = {} as Ciudad;
   ciudad.ciudad = "Santa Cruz";
   ciudad.peliculas = [];
@@ -40,7 +41,7 @@ test('megacenter', async ({ page }) => {
     await page.waitForTimeout(5000);
     ciudad.peliculas[i] = await procesapelicula(page);
     // capturo pantalla de la pelicula
-    await page.screenshot({ path: `cinemark-peli${o}-${i}.png`, fullPage: true });
+    await page.screenshot({ path: `/opt/osbo/cinemark-peli${o}-${i}.png`, fullPage: true });
     await page.goBack();
     await page.waitForTimeout(5000);
     await cierraPopup(page);
