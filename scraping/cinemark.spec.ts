@@ -18,13 +18,16 @@ test('megacenter', async ({ page }) => {
   // Crear instancia de TelegramPublisher
   const telegramPublisher = new TelegramPublisher(token || '', chatId || '', telegram || '');
 
-
+ 
   console.log("Iniciando");
   await page.goto('https://www.cinemark.com.bo/');
+  console.log("esperando carga");
   // espero a que cargue 20 segundos la pagina
   await page.waitForTimeout(10000);
+  console.log("pagina cargada");
   // guardo una captura 
   await cierraPopup(page);
+  console.log("popup cerrado");
   await page.screenshot({ path: `/opt/osbo/cinemarkiiiii${o}.png`, fullPage: true });
   // obtengo el componente que tiene las pelis con clase "transform: translateX(0px); transition: transform 0.5s; flex-basis: 269px; visibility: visible;"
   const peliculasContainer = page.locator('.VueCarousel-inner');
@@ -67,13 +70,30 @@ test('megacenter', async ({ page }) => {
   await telegramPublisher.publicar(cineData, cine || '', await diahoycompleto());
 });
 async function cierraPopup(page: Page) {
-  const otherbu = page.locator('.modal-cookies__accept-button');
-  if (await otherbu.count() > 0) {
-    await otherbu.nth(0).click();
+  try {
+    const otherbu = page.locator('.modal-cookies__accept-button');
+    if (await otherbu.count() > 0) {
+      try {
+        await otherbu.nth(0).click({ timeout: 3000 });
+      } catch (e) {
+        console.log('No se pudo cerrar cookie modal');
+      }
+    }
+  } catch (e) {
+    console.log('Cookie modal check falló');
   }
-  const button = page.locator('.close.closeMovie');
-  if (await button.count() > 0) {
-    await button.nth(0).click();
+
+  try {
+    const button = page.locator('.close.closeMovie');
+    if (await button.count() > 0) {
+      try {
+        await button.nth(0).click({ timeout: 3000 });
+      } catch (e) {
+        console.log('No se pudo cerrar movie modal');
+      }
+    }
+  } catch (e) {
+    console.log('Movie modal check falló');
   }
 }
 
