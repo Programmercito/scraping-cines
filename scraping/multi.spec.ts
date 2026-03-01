@@ -223,7 +223,8 @@ async function procesarHorarios(page: Page): Promise<Pelicula | null> {
         const idiomaTexto = await idioma.innerText();
         // obtengo el hoario
         const horario = horarios.nth(j).locator('.showtime');
-        const horarioTexto = await horario.innerText();
+        let horarioTexto = await horario.innerText();
+        horarioTexto = horarioTexto.replace(/hrs\.?/gi, '').trim();
         // creao un Horario vacio
         const horarioObj: Horario = {
           horario: horarioTexto,
