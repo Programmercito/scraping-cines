@@ -20,7 +20,7 @@ test('megacenter', async ({ page }) => {
 
   do {
     console.log("Iniciando");
-    await page.goto('https://cinecenter.com.bo/');
+    await page.goto('https://www.cinecenter.com.bo/');
     // espero a que cargue 20 segundos la pagina
     await page.waitForTimeout(10000);
     // guardo una captura 
