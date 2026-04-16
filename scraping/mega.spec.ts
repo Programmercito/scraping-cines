@@ -115,21 +115,24 @@ async function cierraPopup(page: Page, reload = false) {
     }
   }
   console.log("proceso a tratar de cerrar popups");
-  // obetenemos el modal que tiene la clase modal-content
-  const boton = await page.locator('.btn-cerrar');
-  const tam=await boton.count();
-  // verifico si son muchos botones
-  if (tam > 0) {
-    for (let i = tam-1; i > -1; i--) {
+  let hayCerrar = true;
+  while (hayCerrar) {
+    const boton = page.locator('.btn-cerrar:visible');
+    const tam = await boton.count();
+    if (tam === 0) {
+      hayCerrar = false;
+      break;
+    }
+    for (let i = tam - 1; i >= 0; i--) {
       const b = boton.nth(i);
       const visible = await b.isVisible();
       if (visible) {
         await b.click({ force: true });
-        await page.waitForTimeout(5000);
-        await page.screenshot({ path: `/opt/osbo/screenshot-popup-${i}.png` });
+        await page.waitForTimeout(2000);
         console.log('Cerrando popup');
       }
     }
+    await page.waitForTimeout(2000);
   }
 
 }
