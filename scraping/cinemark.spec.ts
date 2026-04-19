@@ -18,7 +18,7 @@ test('megacenter', async ({ page }) => {
   // Crear instancia de TelegramPublisher
   const telegramPublisher = new TelegramPublisher(token || '', chatId || '', telegram || '');
 
- 
+
   console.log("Iniciando");
   await page.goto('https://www.cinemark.com.bo/');
   console.log("esperando carga");
@@ -124,43 +124,50 @@ async function procesapelicula(page: Page): Promise<Pelicula> {
   // titulo tiene el class MuiTypography-root MuiTypography-h1 mui-129h4q2
   const titulo = await page.locator('.MuiTypography-root.MuiTypography-h1.mui-129h4q2').first();
   peli.titulo = (await titulo.innerText()) || '';
+  console.log("Procesando pelicula:", peli.titulo);
   peli.horarios = [];
-  const listaHorarios = page.locator('.MuiBox-root.mui-112byoi');
-  const items = listaHorarios.locator('.MuiBox-root.mui-30g0zv');
-  if (await items.count() > 0) {
-    for (let j = 0; j < await items.count(); j++) {
-      const item = items.nth(j);
-      const horario = {} as Horario;
-      const lenguajediv = item.locator('.MuiTypography-root.MuiTypography-body2.mui-1xj2a7k');
+  const listaHorarios = page.locator('.MuiBox-root.mui-1onlnyv').first();
+  const tithorarios = listaHorarios.locator('.MuiBox-root.mui-ct48ax');
+  const dethorarios = listaHorarios.locator('.MuiBox-root.mui-13wu688');
+  console.log("Grupos de horarios encontrados:", await tithorarios.count());
+  console.log("Grupos de horarios encontrados(det):", await dethorarios.count());
+  for (let j = 0; j < await tithorarios.count(); j++) {
+    const itemtitulo = tithorarios.nth(j);
+    const itemdethorarios = dethorarios.nth(j);
+    const horario = {} as Horario;
+    const lenguajediv = itemtitulo.locator('.MuiTypography-root.MuiTypography-body2.mui-1xj2a7k');
 
-      if (await lenguajediv.count() > 0) {
-        const idioma = await lenguajediv.textContent();
-        // el idioma viene con un "·"
-        const idiomaclean = idioma ? idioma.replace('·', '').trim() : '';
-        horario.idioma = idiomaclean;
-
-      }
-      const formato = item.locator('.MuiTypography-root.MuiTypography-body2.mui-5gkdq5');
-      if (await formato.count() > 0) {
-        horario.formato = (await formato.textContent() || '').trim();
-      }
-      const hora = item.locator('.MuiBox-root.mui-13wu688');
-      if (await hora.count() > 0) {
-        const lista = hora.locator('.MuiBox-root.mui-19midw5');
-        if (await lista.count() > 0) {
-          for (let k = 0; k < await lista.count(); k++) {
-            const horaItem = lista.nth(k);
-            // creo copia de horario
-            const horariocp = { ...horario };
-            horariocp.horario = await horaItem.innerText();
-            //LOS HORARIOS terminan en hs , los quiero quitar aqui
-            horariocp.horario = horariocp.horario.replace('hs', '').trim();
-            peli.horarios.push(horariocp);
-          }
-        }
-      }
+    if (await lenguajediv.count() > 0) {
+      const idioma = await lenguajediv.textContent();
+      // el idioma viene con un "·"
+      const idiomaclean = idioma ? idioma.replace('·', '').trim() : '';
+      horario.idioma = idiomaclean;
+      console.log("Idioma encontrado:", horario.idioma);
 
     }
+    const formato = itemtitulo.locator('.MuiTypography-root.MuiTypography-body2.mui-5gkdq5');
+    if (await formato.count() > 0) {
+      horario.formato = (await formato.textContent() || '').trim();
+      console.log("Formato encontrado:", horario.formato);
+    }
+
+    const lista = itemdethorarios.locator('.MuiBox-root.mui-19midw5');
+    if (await lista.count() > 0) {
+      for (let k = 0; k < await lista.count(); k++) {
+        const horaItem = lista.nth(k);
+        // creo copia de horario
+        const horariocp = { ...horario };
+        horariocp.horario = await horaItem.innerText();
+        //LOS HORARIOS terminan en hs , los quiero quitar aqui
+        horariocp.horario = horariocp.horario.replace('hs', '').trim();
+        peli.horarios.push(horariocp);
+        console.log("Horario encontrado:", horariocp.horario);
+      }
+
+
+    }
+
+
   }
   return peli;
 }
