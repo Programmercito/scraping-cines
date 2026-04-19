@@ -29,9 +29,10 @@ test('megacenter', async ({ page }) => {
   await cierraPopup(page);
   console.log("popup cerrado");
   await page.screenshot({ path: `/opt/osbo/cinemarkiiiii${o}.png`, fullPage: true });
-  // obtengo el componente que tiene las pelis con clase "transform: translateX(0px); transition: transform 0.5s; flex-basis: 269px; visibility: visible;"
-  const peliculasContainer = page.locator('.VueCarousel-inner');
-  const pelis = await peliculasContainer.locator('.VueCarousel-slide.weekly-billboard');
+  // las lista de pelis tiene este class MuiGrid-root MuiGrid-container MuiGrid-spacing-lg-6 mui-s6q88m
+  const contenedor = await page.locator('.MuiGrid-root.MuiGrid-container.MuiGrid-spacing-lg-6.mui-s6q88m');
+  // cada peli tiene este class MuiGrid-root MuiGrid-item MuiGrid-grid-sm-6 MuiGrid-grid-md-3 mui-mfo1dw
+  const pelis = contenedor.locator('.MuiGrid-root.MuiGrid-item.MuiGrid-grid-sm-6.MuiGrid-grid-md-3.mui-mfo1dw');
   console.log("Peliculas encontradas:", await pelis.count());
   await page.screenshot({ path: `/opt/osbo/cinemark${o}.png`, fullPage: true });
   const ciudad: Ciudad = {} as Ciudad;
@@ -120,36 +121,40 @@ async function ciudadString(ciudad: Ciudad): Promise<string> {
 }
 async function procesapelicula(page: Page): Promise<Pelicula> {
   const peli = {} as Pelicula;
-  const titulo = await page.locator('.col-xs-8.col-sm-9.col-md-9.col-lg-9');
-  const textot = await titulo.locator('h1').innerText();
-  peli.titulo = textot.trim();
+  // titulo tiene el class MuiTypography-root MuiTypography-h1 mui-129h4q2
+  const titulo = await page.locator('.MuiTypography-root.MuiTypography-h1.mui-129h4q2').first();
+  peli.titulo = (await titulo.innerText()) || '';
   peli.horarios = [];
-  const listaHorarios = page.locator('.movie-schedule');
-  const items = listaHorarios.locator('.box-movie-format');
+  const listaHorarios = page.locator('.MuiBox-root.mui-112byoi');
+  const items = listaHorarios.locator('.MuiBox-root.mui-30g0zv');
   if (await items.count() > 0) {
     for (let j = 0; j < await items.count(); j++) {
       const item = items.nth(j);
       const horario = {} as Horario;
-      const lenguajediv = item.locator('.movie-lenguaje');
+      const lenguajediv = item.locator('.MuiTypography-root.MuiTypography-body2.mui-1xj2a7k');
 
       if (await lenguajediv.count() > 0) {
         const idioma = await lenguajediv.textContent();
-        horario.idioma = idioma || '';
+        // el idioma viene con un "·"
+        const idiomaclean = idioma ? idioma.replace('·', '').trim() : '';
+        horario.idioma = idiomaclean;
 
       }
-      const formato = item.locator('.movie-version');
+      const formato = item.locator('.MuiTypography-root.MuiTypography-body2.mui-5gkdq5');
       if (await formato.count() > 0) {
         horario.formato = (await formato.textContent() || '').trim();
       }
-      const hora = item.locator('.movie-times');
+      const hora = item.locator('.MuiBox-root.mui-13wu688');
       if (await hora.count() > 0) {
-        const lista = hora.locator('.btn.btn-buy');
+        const lista = hora.locator('.MuiBox-root.mui-19midw5');
         if (await lista.count() > 0) {
           for (let k = 0; k < await lista.count(); k++) {
             const horaItem = lista.nth(k);
             // creo copia de horario
             const horariocp = { ...horario };
             horariocp.horario = await horaItem.innerText();
+            //LOS HORARIOS terminan en hs , los quiero quitar aqui
+            horariocp.horario = horariocp.horario.replace('hs', '').trim();
             peli.horarios.push(horariocp);
           }
         }
