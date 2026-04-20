@@ -1,4 +1,4 @@
-# scraping-multicine
+# scraping-multicine 
  
 Una aplicación de scraping para extraer información de películas de múltiples cines y enriquecerla con datos de The Movie Database (TMDb).
 
