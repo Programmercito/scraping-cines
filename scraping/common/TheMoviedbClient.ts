@@ -1,3 +1,5 @@
+/// <reference types="node" />
+import process from "process";
 import { LingvaTranslationClient } from "./LingvaTranslationClient";
 
 export class TheMoviedbClient {

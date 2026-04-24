@@ -1,15 +1,13 @@
-import TeleBot from "telebot";
+import { Bot } from "grammy";
 import { Ciudad } from './common';
 
 export class TelegramPublisher {
-  private bot: TeleBot;
+  private bot: Bot;
   private chatId: string;
   private enabled: boolean;
 
   constructor(token: string, chatId: string, telegram: string) {
-    this.bot = new TeleBot({
-      token: token,
-    });
+    this.bot = new Bot(token);
     this.chatId = chatId;
     this.enabled = telegram === 'true';
   }
@@ -23,12 +21,12 @@ export class TelegramPublisher {
       const ciudadStr = await this.ciudadString(ciudad);
       
       try {
-        await this.bot.sendMessage(
-          this.chatId, 
-          `<b>${nombreCine}</b>\n${fecha}\n${ciudadStr}\n${nombreCine}\n${fecha}`, 
+        await this.bot.api.sendMessage(
+          this.chatId,
+          `<b>${nombreCine}</b>\n${fecha}\n${ciudadStr}\n${nombreCine}\n${fecha}`,
           {
-            notification: false,
-            parseMode: 'html'
+            parse_mode: 'HTML',
+            disable_notification: true,
           }
         );
         console.log('Mensaje enviado');
