@@ -12,7 +12,7 @@ test('multicine', async ({ }) => {
       "--disable-dev-shm-usage",
       "--disable-blink-features=AutomationControlled",
     ],
-  });
+  }); 
 
   const context = await browser.newContext({
     userAgent:
