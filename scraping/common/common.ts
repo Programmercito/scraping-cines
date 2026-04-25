@@ -63,11 +63,8 @@ export interface YouTubeSearchResponse {
 export interface MovieExtras {
   genres: string;
   homepage: string;
-  popularity: number;
   production_companies: string;
   runtime: number;
-  vote_count: number;
-  vote_average: number;
 }
 
 // Re-export classes from separate files

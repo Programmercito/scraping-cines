@@ -50,13 +50,10 @@ export class TheMoviedbClient {
             return {
                 genres: Array.isArray(data.genres) ? data.genres.map((genre: any) => genre.name).join(', ') : '',
                 homepage: data.homepage || '',
-                popularity: typeof data.popularity === 'number' ? data.popularity : 0,
                 production_companies: Array.isArray(data.production_companies)
                     ? data.production_companies.map((company: any) => company.name).join(', ')
                     : '',
-                runtime: typeof data.runtime === 'number' ? data.runtime : 0,
-                vote_count: typeof data.vote_count === 'number' ? data.vote_count : 0,
-                vote_average: typeof data.vote_average === 'number' ? data.vote_average : 0,
+                runtime: typeof data.runtime === 'number' ? data.runtime : 0
             };
         } catch (error) {
             console.error('Error fetching movie details:', error);
@@ -68,11 +65,8 @@ export class TheMoviedbClient {
         return {
             genres: '',
             homepage: '',
-            popularity: 0,
             production_companies: '',
             runtime: 0,
-            vote_count: 0,
-            vote_average: 0,
         };
     }
 }
