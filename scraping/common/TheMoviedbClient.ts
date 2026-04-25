@@ -35,8 +35,8 @@ export class TheMoviedbClient {
             return null;
         }
     }
-    
-    private static async getMovieDetails(movieId: number): Promise<MovieExtras> {
+
+    public static async getMovieDetails(movieId: number): Promise<MovieExtras> {
         try {
             const apiKey = process.env.THEMOVIEDB_KEY;
             const url = `${this.baseUrl}/movie/${movieId}?api_key=${apiKey}&language=es-ES`;

@@ -29,7 +29,11 @@ export class ProcessMovie {
                         moviegood = StringNormalizer.normalizeMovieTitle(response.title);
                         responsed = await TheMoviedbClient.getMovieInformation(moviegood);
                     }
-                    peliculas.push({ id: newId, titulo: movie, video: response.id, extras: responsed, fecha: new Date().toISOString() });
+                    const peliculaData: PeliculaData = { id: newId, titulo: movie, video: response.id, extras: responsed, fecha: new Date().toISOString() };
+                    if (peliculaData.extras && peliculaData.extras.id) {
+                        peliculaData.details = await TheMoviedbClient.getMovieDetails(peliculaData.extras.id);
+                    }
+                    peliculas.push(peliculaData);
                     JsonFile.saveToJson(peliculas, filePath);
                     return newId;
                 } else {
