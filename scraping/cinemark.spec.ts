@@ -43,6 +43,7 @@ test('megacenter', async ({ page }) => {
     const peli = pelis.nth(i);
     peli.click();
     await page.waitForTimeout(5000);
+    await page.screenshot({ path: `/opt/osbo/cinemark-peli${o}-${i}-before.png`, fullPage: true });
     ciudad.peliculas[i] = await procesapelicula(page);
     // capturo pantalla de la pelicula
     await page.screenshot({ path: `/opt/osbo/cinemark-peli${o}-${i}.png`, fullPage: true });
@@ -78,6 +79,15 @@ async function cierraPopup(page: Page) {
         await otherbu.nth(0).click({ timeout: 3000 });
       } catch (e) {
         console.log('No se pudo cerrar cookie modal');
+      }
+    }
+    // ahy otro boton posible con esta clase que tambien hhay que hacer lo mismo MuiButtonBase-root MuiButton-root MuiButton-icon MuiButton-iconFilled MuiButton-sizeMedium MuiButton-iconSizeMedium MuiButton-colorFilled MuiButton-root MuiButton-icon MuiButton-iconFilled MuiButton-sizeMedium MuiButton-iconSizeMedium MuiButton-colorFilled mui-ln6w1i
+    const otherbu2 = page.locator('.MuiButtonBase-root.MuiButton-root.MuiButton-icon.MuiButton-iconFilled.MuiButton-sizeMedium.MuiButton-iconSizeMedium.MuiButton-colorFilled.mui-ln6w1i');
+    if (await otherbu2.count() > 0) {
+      try {
+        await otherbu2.nth(0).click({ timeout: 3000 });
+      } catch (e) {
+        console.log('No se pudo cerrar cookie modal 2');
       }
     }
   } catch (e) {
