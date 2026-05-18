@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { parse } from 'path';
 import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor, ProcessMovie, CineDataProcessor, TelegramPublisher } from './common/common';
 
-test('megacenter', async ({ page }) => {
+test('cinemark', async ({ page }) => {
 
   let o = 0;
   let count = 0;

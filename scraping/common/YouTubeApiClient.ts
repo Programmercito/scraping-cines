@@ -39,7 +39,12 @@ export class YouTubeApiClient {
       }
 
       // Construir la query de búsqueda
-      const searchQuery = `${movieName} ${this.CURRENT_YEAR} trailer latino`;
+      const normalizedName = movieName
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim();
+      const searchQuery = `${normalizedName} ${this.CURRENT_YEAR} trailer latino`;
 
       // Construir la URL de la API
       const url = new URL(this.BASE_URL);
