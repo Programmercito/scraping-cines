@@ -39,7 +39,7 @@ export class YouTubeApiClient {
       }
 
       // Construir la query de búsqueda
-      const normalizedName = movieName
+      const normalizedName = movieName 
         .toLowerCase()
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
