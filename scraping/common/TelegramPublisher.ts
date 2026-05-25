@@ -23,10 +23,15 @@ export class TelegramPublisher {
       try {
         await this.bot.api.sendMessage(
           this.chatId,
-          `<b>${nombreCine}</b>\n${fecha}\n${ciudadStr}\n${nombreCine}\n${fecha}`,
+          `<b>${nombreCine}</b>\n${fecha}\n${ciudadStr}`,
           {
             parse_mode: 'HTML',
             disable_notification: true,
+            reply_markup: {
+              inline_keyboard: [[
+                { text: 'Pagina web', url: 'https://cine.devcito.org' }
+              ]]
+            }
           }
         );
         console.log('Mensaje enviado');
