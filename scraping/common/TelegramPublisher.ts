@@ -23,7 +23,7 @@ export class TelegramPublisher {
       try {
         await this.bot.api.sendMessage(
           this.chatId,
-          `<b>${nombreCine}</b>\n${fecha}\n${ciudadStr}`,
+          `<b>${nombreCine}</b>\n${fecha}\n${ciudadStr}${fecha}\n<b>${nombreCine}</b>`,
           {
             parse_mode: 'HTML',
             disable_notification: true,
