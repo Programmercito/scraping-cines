@@ -5,7 +5,7 @@ Una aplicación de scraping para extraer información de películas de múltiple
 ## Descripción
 
 Esta aplicación permite hacer scraping de información de películas desde diferentes sitios web de cines y luego enriquecer esa información con datos adicionales como descripciones, géneros, y calificaciones desde TMDb.
-
+ 
 ## Características
 
 - Scraping de múltiples sitios de cines
