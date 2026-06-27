@@ -1,7 +1,7 @@
 import { test, expect, Page, chromium } from '@playwright/test';
 import dotenv from 'dotenv';
 import { parse } from 'path';
-import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor, ProcessMovie, CineDataProcessor, TelegramPublisher } from './common/common';
+import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor, ProcessMovie, CineDataProcessor, TelegramPublisher, trackPosition } from './common/common';
 
 
 test('multicine', async ({ }) => {
@@ -60,6 +60,7 @@ test('multicine', async ({ }) => {
   });
 
   const page = await context.newPage();
+  await trackPosition(page);
 
   await page.goto("https://www.multicine.com.bo/", {
     referer: "https://www.google.com/",

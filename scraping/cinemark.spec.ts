@@ -1,7 +1,7 @@
 import { test, expect, Page } from '@playwright/test';
 import dotenv from 'dotenv';
 import { parse } from 'path';
-import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor, ProcessMovie, CineDataProcessor, TelegramPublisher } from './common/common';
+import { JsonFile, Ciudad, Pelicula, Horario, SystemCommandExecutor, ProcessMovie, CineDataProcessor, TelegramPublisher, trackPosition } from './common/common';
 
 test('cinemark', async ({ page }) => {
 
@@ -9,6 +9,8 @@ test('cinemark', async ({ page }) => {
   let count = 0;
   const ciudadArray: Ciudad[] = [];
   dotenv.config();
+
+  await trackPosition(page);
 
   const token = process.env.TOKEN;
   const chatId = process.env.CHATID;

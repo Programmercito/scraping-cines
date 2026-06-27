@@ -75,3 +75,4 @@ export { SystemCommandExecutor } from './SystemCommandExecutor';
 export { CineDataProcessor } from './CineDataProcessor';
 export { TelegramPublisher } from './TelegramPublisher';
 export { TheMoviedbClient } from './TheMoviedbClient';
+export { trackPosition } from './PositionTracker';
