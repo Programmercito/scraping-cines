@@ -8,7 +8,7 @@ export class StringNormalizer {
             
             // Convertir a minúsculas
             const lowercase = withoutAccents.toLowerCase();
-            
+              
             // Hacer split con 'trailer'
             const parts = lowercase.split('trailer');
             
