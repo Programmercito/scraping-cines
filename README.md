@@ -14,7 +14,7 @@ Esta aplicación permite hacer scraping de información de películas desde dife
 - Procesamiento asíncrono de datos
 
 ## Instalación
-
+ 
 1. Clona el repositorio:
     ```bash
     git clone <url-del-repositorio>
