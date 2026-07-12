@@ -2,15 +2,14 @@ name: Compilator
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "main_us" ]
+
 
 jobs:
 
   deploy:
-    
     runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'prod_us' }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v4    
