@@ -4,7 +4,6 @@ on:
   push:
     branches: [ "main", "main_us" ]
 
-
 jobs:
 
   deploy:
@@ -12,13 +11,40 @@ jobs:
     environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'prod_us' }}
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4    
+      uses: actions/checkout@v4
+
     - name: config copy files
       run: |
         mkdir -p ~/.ssh
         touch ~/.ssh/known_hosts
         ssh-keyscan -H ${{ secrets.SERVER }} >> ~/.ssh/known_hosts
-        
+
+    - name: config cronjobs prod
+      if: ${{ github.ref == 'refs/heads/main' }}
+      run: |
+        echo "${{ secrets.KEY }}" > ./private_key
+        chmod 600 ./private_key
+        ssh -o StrictHostKeyChecking=no -i ./private_key ${{ secrets.USER }}@${{ secrets.SERVER }} "
+          microk8s kubectl patch cronjob botcine-cronjob-cinemark -n botcine -p '{\"spec\":{\"suspend\":true}}'
+          microk8s kubectl patch cronjob botcine-cronjob-mega -n botcine -p '{\"spec\":{\"suspend\":true}}'
+          microk8s kubectl patch cronjob botcine-cronjob-monje -n botcine -p '{\"spec\":{\"suspend\":false}}'
+          microk8s kubectl patch cronjob botcine-cronjob-multicine -n botcine -p '{\"spec\":{\"suspend\":false}}'
+          microk8s kubectl patch cronjob botcine-cronjob-skybox -n botcine -p '{\"spec\":{\"suspend\":false}}'
+        "
+
+    - name: config cronjobs prod_us
+      if: ${{ github.ref == 'refs/heads/main_us' }}
+      run: |
+        echo "${{ secrets.KEY }}" > ./private_key
+        chmod 600 ./private_key
+        ssh -o StrictHostKeyChecking=no -i ./private_key ${{ secrets.USER }}@${{ secrets.SERVER }} "
+          microk8s kubectl patch cronjob botcine-cronjob-cinemark -n botcine -p '{\"spec\":{\"suspend\":false}}'
+          microk8s kubectl patch cronjob botcine-cronjob-mega -n botcine -p '{\"spec\":{\"suspend\":true}}'
+          microk8s kubectl patch cronjob botcine-cronjob-monje -n botcine -p '{\"spec\":{\"suspend\":true}}'
+          microk8s kubectl patch cronjob botcine-cronjob-multicine -n botcine -p '{\"spec\":{\"suspend\":true}}'
+          microk8s kubectl patch cronjob botcine-cronjob-skybox -n botcine -p '{\"spec\":{\"suspend\":true}}'
+        "
+
     - name: Deploy and copy files
       run: |
         echo "${{ secrets.KEY }}" > ./private_key
@@ -29,7 +55,7 @@ jobs:
         ssh -o StrictHostKeyChecking=no -i ./private_key ${{ secrets.USER }}@${{ secrets.SERVER }} "cp /opt/codes/bot-dockers/botcine/docker/play.dockerfile /opt/botcine"
         ssh -o StrictHostKeyChecking=no -i ./private_key ${{ secrets.USER }}@${{ secrets.SERVER }} "cd /opt/botcine && ls -la"
         ssh -o StrictHostKeyChecking=no -i ./private_key ${{ secrets.USER }}@${{ secrets.SERVER }} "echo 'termino ls -la'"
-        
+
         ssh -o StrictHostKeyChecking=no -i ./private_key ${{ secrets.USER }}@${{ secrets.SERVER }} "docker build -t localhost:32000/botcine:latest -f /opt/botcine/play.dockerfile /opt/botcine/"
-        ssh -o StrictHostKeyChecking=no -i ./private_key ${{ secrets.USER }}@${{ secrets.SERVER }} "docker push localhost:32000/botcine:latest" 
-        ssh -o StrictHostKeyChecking=no -i ./private_key ${{ secrets.USER }}@${{ secrets.SERVER }} "microk8s kubectl apply -f /opt/codes/bot-dockers/botcine/kub/services.yaml" 
+        ssh -o StrictHostKeyChecking=no -i ./private_key ${{ secrets.USER }}@${{ secrets.SERVER }} "docker push localhost:32000/botcine:latest"
+        ssh -o StrictHostKeyChecking=no -i ./private_key ${{ secrets.USER }}@${{ secrets.SERVER }} "microk8s kubectl apply -f /opt/codes/bot-dockers/botcine/kub/services.yaml"
