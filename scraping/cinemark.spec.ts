@@ -43,7 +43,8 @@ test('cinemark', async ({ page }) => {
   // recorro la lista si hay lista
   for (let i = 0; i < await pelis.count(); i++) {
     const peli = pelis.nth(i);
-    peli.click();
+    // click() normal se cuelga: el header sticky #cnk-header tapa el item al hacer scroll y bloquea el click
+    await peli.locator('a[data-testid="movie-link"]').evaluate((el) => (el as HTMLElement).click());
     await page.waitForTimeout(5000);
     await page.screenshot({ path: `/opt/osbo/cinemark-peli${o}-${i}-before.png`, fullPage: true });
     ciudad.peliculas[i] = await procesapelicula(page);
