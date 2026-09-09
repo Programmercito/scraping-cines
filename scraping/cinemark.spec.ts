@@ -157,13 +157,14 @@ async function procesapelicula(page: Page): Promise<Pelicula> {
       console.log("Idioma encontrado:", horario.idioma);
 
     }
-    const formato = itemtitulo.locator('.MuiTypography-root.MuiTypography-body2.mui-5gkdq5');
+    const formato = itemtitulo.locator('.MuiTypography-root.MuiTypography-body2.mui-1ag1kpk');
     if (await formato.count() > 0) {
       horario.formato = (await formato.textContent() || '').trim();
       console.log("Formato encontrado:", horario.formato);
     }
 
-    const lista = itemdethorarios.locator('.MuiBox-root.mui-19midw5');
+    // usamos la clase estable "showtime-card-item" en vez del hash mui- que cambia con cada build
+    const lista = itemdethorarios.locator('.showtime-card-item');
     if (await lista.count() > 0) {
       for (let k = 0; k < await lista.count(); k++) {
         const horaItem = lista.nth(k);
