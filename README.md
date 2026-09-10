@@ -2,7 +2,7 @@
  
 Una aplicación de scraping para extraer información de películas de múltiples cines y enriquecerla con datos de The Movie Database (TMDb).
 
-## Descripción
+## Descripción 
 
 Esta aplicación permite hacer scraping de información de películas desde diferentes sitios web de cines y luego enriquecer esa información con datos adicionales como descripciones, géneros, y calificaciones desde TMDb.
  
